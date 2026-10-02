@@ -76,20 +76,6 @@
 | TFV | 22 | [twsg](docs/PAPERS.md#twsg) · [dre-critic](docs/PAPERS.md#dre-critic) · [tablemix](docs/PAPERS.md#tablemix) · [rsat](docs/PAPERS.md#rsat) · [v_tabler1](docs/PAPERS.md#v_tabler1) · [tarex](docs/PAPERS.md#tarex) · [mm_table_r1](docs/PAPERS.md#mm_table_r1) · [operation-r1](docs/PAPERS.md#operation-r1) · [coretab](docs/PAPERS.md#coretab) · [star](docs/PAPERS.md#star) · [mixture-of-minds](docs/PAPERS.md#mixture-of-minds) · [tattoo](docs/PAPERS.md#tattoo) · [visual_table_r1](docs/PAPERS.md#visual_table_r1) · [m3tqa](docs/PAPERS.md#m3tqa) · [table-r1-program](docs/PAPERS.md#table-r1-program) · [turbo](docs/PAPERS.md#turbo) · [reasoning-table](docs/PAPERS.md#reasoning-table) · [table-r1-scaling](docs/PAPERS.md#table-r1-scaling) · [formula-r1](docs/PAPERS.md#formula-r1) · [more](docs/PAPERS.md#more) · [table-r1-region](docs/PAPERS.md#table-r1-region) · [sparks-text2sql](docs/PAPERS.md#sparks-text2sql) |
 | T2T | 2 | [reasoning-table](docs/PAPERS.md#reasoning-table) · [table-r1-scaling](docs/PAPERS.md#table-r1-scaling) |
 
-## 🗂️ 仓库结构
-
-```text
-README.md                 # 六列表格索引
-data/papers.json          # 可维护的规范数据与证据
-data/papers.csv           # 便于筛选的导出
-docs/PAPERS.md            # 每篇的训练/评测、图来源与限制
-docs/SCREENING.md         # 检索过程与排除理由
-img/*.png                 # 每篇一张原始方法图
-img/README.md             # 图号、PDF 页码、来源与 SHA256
-scripts/build_readme.py   # 由 JSON 重建索引
-scripts/extract_figures.py# 下载公开 PDF 与按坐标提图
-```
-
 ## 🤝 Contributing
 
 欢迎补充有原文证据的新论文，参见 [CONTRIBUTING.md](CONTRIBUTING.md)。更新 `data/papers.json` 后运行 `python scripts/build_readme.py`；提图与维护说明见贡献指南。

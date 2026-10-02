@@ -65,8 +65,7 @@ def build():
         group = [e for e in papers if task in e['tasks']]
         links = ' · '.join(f"[{e['slug']}](docs/PAPERS.md#{e['slug']})" for e in group)
         lines.append(f'| {task} | {len(group)} | {links or "本次未核实符合标准的工作"} |')
-    lines += ['', '## 🗂️ 仓库结构', '',
-              '```text', 'README.md                 # 六列表格索引', 'data/papers.json          # 可维护的规范数据与证据', 'data/papers.csv           # 便于筛选的导出', 'docs/PAPERS.md            # 每篇的训练/评测、图来源与限制', 'docs/SCREENING.md         # 检索过程与排除理由', 'img/*.png                 # 每篇一张原始方法图', 'img/README.md             # 图号、PDF 页码、来源与 SHA256', 'scripts/build_readme.py   # 由 JSON 重建索引', 'scripts/extract_figures.py# 下载公开 PDF 与按坐标提图', '```', '',
+    lines += ['',
               '## 🤝 Contributing', '', '欢迎补充有原文证据的新论文，参见 [CONTRIBUTING.md](CONTRIBUTING.md)。更新 `data/papers.json` 后运行 `python scripts/build_readme.py`；提图与维护说明见贡献指南。', '',
               '## 📄 来源与版权', '', '论文方法图属于原作者/出版方，保留来源与图号；本仓库不对第三方图片重新授权。原文 PDF 仅缓存于忽略目录，不打包分发。使用或转载图片请遵守对应论文许可，见 [RIGHTS.md](RIGHTS.md)。', '']
     (ROOT / 'README.md').write_text('\n'.join(lines), encoding='utf-8')
