@@ -1,6 +1,6 @@
 # 独立核对记录
 
-核对日期：2026-10-02。本次核对针对汇总到 `data/papers.json` 的 27 个主条目，以及 `docs/SCREENING.md`。这是一轮独立抽查与完整性检查，不等同于对所有实验的复现。
+核对日期：2026-10-02。下方独立核对记录针对首次汇总的 27 个主条目；文末另记第二轮新增 15 篇的原文核查。新增部分为维护者逐项核查，没有声称经过另一轮独立评审；均不等同于实验复现。
 
 ## 数据与任务边界
 
@@ -30,3 +30,20 @@
 27 个主条目没有重复 slug；已登记的图片路径均存在，图页码未超出对应 PDF 页数，已提供 SHA256 的 PDF 均匹配。原图的 crop 坐标用于可追溯重提取，不代表作者发布了独立图片许可。
 
 本轮通过 `TabFact PPO`、`ToTTo GRPO` 与 TFV/T2T 组合检索发现并补录了 [When LLMs Read Tables Carelessly](https://aclanthology.org/2026.acl-long.762/)。当前未发现需要删除的主条目；各边界条目的限定说明应在 README 或论文证据卡中保留。
+
+## 第二轮新增条目的原文核查
+
+本轮补充 15 篇，共 42 篇（文本 30 / 多模态 12）。新增条目逐项检查实际 RL 策略更新、训练/评测划分、原图与版本，并固定 PDF SHA256 和裁切坐标。检查重点如下：
+
+- **DianJin-R1**：Table 1 与脚注明确 RL 仅使用 4,096 道 CFLUE-MCQ；4,851 条 FinQA 属于 SFT，不冒充表格 QA RL 训练。
+- **Fin-R1**：60,091 是 SFT 数据量；RL 客观题池还保留部分 SFT 被过滤的困难题，未单列 RL 总数。
+- **MoFin**：§3.3.1 总数 3,747 与分项 540 + 3,247 不一致，保留原文差异。**Program-Centric Policy Optimization** 的 14,661 与 2,993 + 11,688 也不一致；其 FinQA 验证/测试并入训练的事实明确注明。
+- **TableMind**：按 Table 1 标注 RL 的 TabFact 3,500 / TabMWP 3,500 / WikiTQ 1,000，注明正文来源与表格的冲突。TableMind++ 作为沿用同一 RL 框架的推理扩展关联。
+- **TableGPT-R1 / JT-DA**：表格数量、热启动占比、SFT 轨迹量和 RL QA 样本量分别处理；未披露的训练数据名称或数量没有用评测集补齐。
+- **ACPO**：原文 Table 1(b) 明确模型在 HiTab 上训练；其验证/测试口径差异和更早匿名版本日期未核实的情况均保留。
+- **Thinking with Tables**：1.5K+1.2K 是 TO-SFT，0.5K+0.4K 是 AL-GRPO；表格预测分类并非 TFV。QA 输入视觉表头，完整表格由 CSV 工具访问。
+- **DocR1**：EviBench 4,800 用于两阶段 EviGRPO，含 WTQ 和 TabFact；ArxivFullQA 8.6K 是评测集规模，训练仅用其中 500 条。单独 SFT 对照不是主模型的热启动。
+- **Tiny-R1V**：专家训练才是 LIPO，AMM 合并不是 RL。15K 是混合表格/图表/文档池，不能视为 15K 纯表格题。
+- **DeFacto**：视觉 WTQ 支持 TQA 评测标签，但未据此假定 WTQ 专属 RL 数据；DeFacto-1.5K 是评测集。
+
+原图已逐张检查裁切完整性；少数没有独立 RL 架构图的条目明确注明替代图类型。新增资料与检索边界见 [SCREENING.md](SCREENING.md)，逐篇位置见 [PAPERS.md](PAPERS.md)。

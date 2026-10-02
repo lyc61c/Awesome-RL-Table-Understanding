@@ -1542,6 +1542,848 @@
       "pdf_sha256": "a659afc81797056a8c3cf66dea39abd1cfecf70877d227e1783b6264964969ab",
       "pdf_file": "tmp/pdfs/drl-qa-text-tables.pdf",
       "scope_note": "RL 训练模块调度控制器，底层阅读器保持固定。"
+    },
+    {
+      "slug": "tablelong",
+      "title": "Probing How Scalable Table Data Enhances General Long-Context Reasoning",
+      "date": "2026-03-23",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2603.21719",
+      "pdf_url": "https://arxiv.org/pdf/2603.21719v1",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "GRPO / RLVR",
+      "method_zh": "把真实表格组织成可执行 SQL 环境，合成检索、计算与跨表关联问题；用 SQL 执行答案验证奖励，并保留成功率介于 0 与 1 的训练题。以 GRPO 训练长上下文推理模型。",
+      "sft_data": "未新增 SFT；从 Qwen / DeepSeek-R1-Distill 系列模型直接进行 RL。",
+      "rl_data": "TableLong 合成 QA：BIRD、CoSQL、Spider 及文档抽取得到的 10,000+ 表格；每题组合 1–30 张表，构造中英双语、最长约 32K 上下文。未单列最终 QA 对总数。",
+      "eval_data": "LongBench v2、Loong、BrowseComp Long Context、MRCR、RULER、GSM-Infinite、Oolong；通用推理域外评测。",
+      "figure_number": "1",
+      "figure_page": 3,
+      "figure_crop": [
+        307,
+        217,
+        541,
+        420
+      ],
+      "figure_path": "img/tablelong.png",
+      "figure_caption": "TableLong 数据构造与可验证 RL 流程。",
+      "pdf_sha256": "0b477e216e8245fd1d4772db9f58b9cb4975d2d7a97c87f4c2808ea80c026ea2",
+      "code_url": null,
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2603.21719v1",
+          "location": "§3.1–3.2，PDF pp.3–4",
+          "note": "数据来自 10,000+ 表格；SQL 生成问题与可验证答案，过滤全对和全错题。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2603.21719v1",
+          "location": "§4.1 / Appendix B",
+          "note": "使用 GRPO；这里的 10,000+ 是表格数，不是 RL QA 对数。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2603.21719v1",
+          "location": "Fig.1，PDF p.3",
+          "note": "原文端到端数据构造和 RLVR 流程图。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2603.21719",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "表格 QA 用于 RL 训练，主要评测通用长上下文迁移；未报告标准 TQA 基准结果。",
+      "pdf_version": "arXiv v1"
+    },
+    {
+      "slug": "fin-r1",
+      "title": "Fin-R1: A Large Language Model for Financial Reasoning through Reinforcement Learning",
+      "date": "2025-03-20",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2503.16252",
+      "pdf_url": "https://arxiv.org/pdf/2503.16252v5",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "SFT + GRPO",
+      "method_zh": "以 DeepSeek-R1 蒸馏的金融推理轨迹做 SFT，再用答案准确性与输出格式奖励进行 GRPO。RL 使用题目和客观答案，不依赖完整教师推理轨迹，并保留部分 SFT 阶段过滤掉的困难题。",
+      "sft_data": "Fin-R1-Data：60,091 条中英金融推理样本；包含 FinQA 2,948、ConvFinQA 7,629，以及 FinanceQT、Finance500K、FinanceIQ、FinPEE、AntFinance、FinCorpus、TFNS、FinCUGE。",
+      "rl_data": "从上述原始来源整理客观题 (question, solution)，包含部分蒸馏未通过筛选的困难样本；未单列 RL 总量及各来源数量。60,091 是 SFT 数据规模。",
+      "eval_data": "FinQA、ConvFinQA、AntFinance、TFNS、Finance500K。",
+      "figure_number": "5",
+      "figure_page": 16,
+      "figure_crop": [
+        118,
+        51,
+        492,
+        320
+      ],
+      "figure_path": "img/fin-r1.png",
+      "figure_caption": "金融模型的 SFT 与 GRPO 后训练框架。",
+      "pdf_sha256": "5529c466a64aad85ec979980b59e3932fcbda2cd0d2d4fa47a9affa6be6db915",
+      "code_url": "https://github.com/SUFE-AIFLM-Lab/Fin-R1",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2503.16252v5",
+          "location": "§3.1 / Appendix A Tables 3–4，PDF pp.11、39",
+          "note": "Fin-R1-Data 规模与分来源统计；FinQA 和 ConvFinQA 属于表格金融问答。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2503.16252v5",
+          "location": "§4.2，PDF p.19",
+          "note": "GRPO 的 RL 数据与蒸馏 SFT 数据不同；困难题保留，未给 RL 样本总量。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2503.16252v5",
+          "location": "Fig.5，PDF p.16",
+          "note": "原文后训练方法图。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2503.16252",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "通用金融推理模型；训练池包含表格 QA，也包含非表格金融任务。",
+      "pdf_version": "arXiv v5，2026-03-19"
+    },
+    {
+      "slug": "dianjin-r1",
+      "title": "DianJin-R1: Evaluating and Enhancing Financial Reasoning in Large Language Models",
+      "date": "2025-04-22",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2504.15716",
+      "pdf_url": "https://arxiv.org/pdf/2504.15716v1",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "SFT + GRPO",
+      "method_zh": "先以金融 CoT 数据做 SFT，再对困难金融选择题做 GRPO，以答案选项匹配和 think/answer 格式提供奖励；在 FinQA 上检验后训练模型的表格数值推理能力。",
+      "sft_data": "CFLUE-MCQ 26,672、CFLUE-OE 5,045、FinQA 4,851、Chinese Compliance Check 1,800。",
+      "rl_data": "CFLUE-MCQ 的 4,096 道困难选择题；当前版本未将 FinQA 用于 RL。",
+      "eval_data": "CFLUE、FinQA、Chinese Compliance Check；MATH-500、GPQA Diamond 域外评测。",
+      "figure_number": "2",
+      "figure_page": 6,
+      "figure_crop": [
+        106,
+        86,
+        506,
+        313
+      ],
+      "figure_path": "img/dianjin-r1.png",
+      "figure_caption": "DianJin-R1 的 SFT→RL 两步训练。",
+      "pdf_sha256": "1ec27ffabe9033aab41e47064bf29006e475a96082f042eb47c01c236ffd3744",
+      "code_url": "https://github.com/aliyun/qwen-dianjin",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2504.15716v1",
+          "location": "Table 1，PDF p.5",
+          "note": "FinQA 4,851 用于 SFT；RL 栏仅有 CFLUE-MCQ 4,096。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2504.15716v1",
+          "location": "§3.1 / 脚注 2，PDF p.6",
+          "note": "当前准确性奖励仅用于 CFLUE 多选题；FinQA/OE/CCC 纳入 RL 属于未来计划。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2504.15716v1",
+          "location": "Fig.2，PDF p.6",
+          "note": "原文两步后训练示意。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2504.15716",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "表格 QA 属于 SFT 与评测；实际 RL 训练的是金融选择题，不能把 FinQA 标成 RL 数据。",
+      "caveats": [
+        "属于跨任务迁移边界条目，收录依据是实际 GRPO 后训练模型的 FinQA 实验。"
+      ],
+      "pdf_version": "arXiv v1"
+    },
+    {
+      "slug": "mofin",
+      "title": "MoFin: A Small Vietnamese Language Model for Financial Reasoning via Reinforcement Learning",
+      "date": "2025-10",
+      "venue": "VLSP 2025",
+      "paper_url": "https://aclanthology.org/2025.vlsp-1.27/",
+      "pdf_url": "https://aclanthology.org/2025.vlsp-1.27.pdf",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "CoT SFT + GRPO",
+      "method_zh": "翻译并核验 FinQA 金融表格与推理程序，蒸馏执行正确的 CoT 后做 LoRA SFT；GRPO 结合格式、程序匹配和执行结果奖励，提升越南语金融数值推理。",
+      "sft_data": "VLSP 官方 540 条 + 翻译 FinQA 3,247 条，含蒸馏 CoT。§3.3.1 报告总数 3,747，但分项合计 3,787，原文不一致。",
+      "rl_data": "从上述金融 QA 池按提示长度筛选（第 19 百分位阈值）后做 GRPO；未单列最终 RL 数量。",
+      "eval_data": "VLSP 2025 Financial Numerical Reasoning 隐藏测试；程序准确性与执行准确性。",
+      "figure_number": "1",
+      "figure_page": 3,
+      "figure_crop": [
+        68,
+        68,
+        527,
+        198
+      ],
+      "figure_path": "img/mofin.png",
+      "figure_caption": "原文越南语金融训练数据构造图；未提供独立 RL 框图。",
+      "pdf_sha256": "163639cc512455f1bb62e9b19e5dcc6b1f7b070126f3a5762b6efd4d6fa4dd00",
+      "code_url": null,
+      "evidence": [
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.27.pdf",
+          "location": "§3.2 / Fig.1，PDF p.3",
+          "note": "FinQA 翻译、蒸馏与执行校验的数据构造流程。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.27.pdf",
+          "location": "§3.3.1，PDF p.4",
+          "note": "正文总数 3,747 与 540+3,247 的分项不一致，保留差异。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.27.pdf",
+          "location": "§3.3.2，PDF pp.4–5",
+          "note": "实际 GRPO 与程序/执行/格式奖励，提示长度筛选。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.27/",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "图为原文数据构造流程，论文未单独绘制 RL 架构图。",
+      "caveats": [
+        "训练规模的正文和分项存在差异，不能自行选择其中一个作为无争议的最终总数。"
+      ],
+      "date_basis": "可核实的 ACL Anthology 正式会议时间为 2025 年 10 月；未核实到更早预印本日期。"
+    },
+    {
+      "slug": "vietnamese-program-grpo",
+      "title": "Enhancing Numerical Reasoning in Vietnamese Financial Question Answering through Program-Centric Policy Optimization",
+      "date": "2025-10",
+      "venue": "VLSP 2025",
+      "paper_url": "https://aclanthology.org/2025.vlsp-1.26/",
+      "pdf_url": "https://aclanthology.org/2025.vlsp-1.26.pdf",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "CoNR SFT + PCPO 奖励 / GRPO",
+      "method_zh": "教师模型生成 Chain-of-Numerical-Reasoning 轨迹供 SFT；GRPO 用程序可执行性、答案匹配和简洁性组成 PCPO 奖励，先通过有效程序门控，再优化数值正确性与输出长度。PCPO 是奖励设计，实际优化算法为 GRPO。",
+      "sft_data": "VLSP 2025 train（2,993）+ 越南语翻译并程序重增强的 FinQA，论文报告 CoNR SFT 共 14,661 条。",
+      "rl_data": "上述金融问答训练池用于程序中心 GRPO；未单列 RL 筛选后样本数。",
+      "eval_data": "VLSP 验证 584、公开测试 497、私有测试 1,625。",
+      "figure_number": "1",
+      "figure_page": 3,
+      "figure_crop": [
+        147,
+        68,
+        448,
+        222
+      ],
+      "figure_path": "img/vietnamese-program-grpo.png",
+      "figure_caption": "CoNR 蒸馏、SFT 与 GRPO 的整体框架。",
+      "pdf_sha256": "e127229b0192655094b835dc893d29f5aa485210e10be436ebb9af3ef703ed5e",
+      "code_url": "https://github.com/duccd4/vlsp2025-financial-numerical-reasoning",
+      "evidence": [
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.26.pdf",
+          "location": "§3.1 / Table 1，PDF pp.2–3",
+          "note": "将 FinQA train/validation/public-test 合并后用于翻译和训练增强。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.26.pdf",
+          "location": "§3.2–3.4，PDF pp.3–5",
+          "note": "CoNR 数据规模、SFT、PCPO 奖励及 GRPO 更新。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.26.pdf",
+          "location": "Fig.1，PDF p.3",
+          "note": "原文训练方法流程图。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.26/",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "caveats": [
+        "原文将 FinQA 验证/公开测试划入训练来源；不能将这些划分再视作独立 FinQA 测试。",
+        "报告总数 14,661 与所列 VLSP 2,993 + 增强 FinQA 11,688（合计 14,681）不一致，未自行修正。"
+      ],
+      "date_basis": "使用 ACL Anthology 正式会议月份 2025-10；未核实更早预印本。"
+    },
+    {
+      "slug": "vietnamese-two-stage",
+      "title": "Two-Stage Training with Reinforcement Learning for Vietnamese Financial Numerical Reasoning",
+      "date": "2025-10",
+      "venue": "VLSP 2025",
+      "paper_url": "https://aclanthology.org/2025.vlsp-1.28/",
+      "pdf_url": "https://aclanthology.org/2025.vlsp-1.28.pdf",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "LoRA SFT + GRPO",
+      "method_zh": "Qwen3 先学习越南语金融程序生成，再以 GRPO 强化：程序执行失败为 −2、执行答案正确为 +1、其他为 0。最终方案保留完整 Markdown 表格及前后文，避免检索裁剪丢失运算依据。",
+      "sft_data": "VLSP 2025 Vietnamese Financial Numerical Reasoning train：2,993 条，含翻译 FinQA 和越南语财务报告来源。",
+      "rl_data": "同一 VLSP train（2,993 条），在 SFT 后进行一轮 GRPO；每提示采样 4 个程序。",
+      "eval_data": "VLSP validation 584 / public-test 497；公开测试程序与执行准确性。",
+      "figure_number": "1",
+      "figure_page": 3,
+      "figure_crop": [
+        68,
+        68,
+        527,
+        160
+      ],
+      "figure_path": "img/vietnamese-two-stage.png",
+      "figure_caption": "越南语金融数值推理两阶段训练框架。",
+      "pdf_sha256": "c8890a0cec848cfe5bad23e3dda391076b2be44015b237720373a29fc95370c6",
+      "code_url": null,
+      "evidence": [
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.28.pdf",
+          "location": "§3 / Table 1，PDF pp.2–3",
+          "note": "VLSP 全集 4,074，划分 2,993/584/497。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.28.pdf",
+          "location": "§4.2，PDF pp.3–4",
+          "note": "LoRA SFT 后 GRPO；执行结果奖励 −2/0/+1。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.28.pdf",
+          "location": "Fig.1，PDF p.3",
+          "note": "原文两阶段方法图。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.vlsp-1.28/",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "date_basis": "使用 ACL Anthology 正式会议月份 2025-10；未核实更早预印本。"
+    },
+    {
+      "slug": "imbalanced-gradients",
+      "title": "Imbalanced Gradients in RL Post-Training of Multi-Task LLMs",
+      "date": "2025-10-22",
+      "venue": "Findings of EACL 2026",
+      "paper_url": "https://aclanthology.org/2026.findings-eacl.164/",
+      "pdf_url": "https://aclanthology.org/2026.findings-eacl.164.pdf",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "GRPO / RLVR；任务采样对比",
+      "method_zh": "研究多任务 RL 中各任务梯度尺度不均衡：在 FinQA、数学、代码与算术混合训练中比较均匀采样和按梯度范数分配的采样，分析采样权重如何影响各任务学习。没有提出新的表格专用 RL 算法。",
+      "sft_data": "未新增 SFT；从 Qwen2.5 / Llama-3.2 指令模型进行 RL。",
+      "rl_data": "跨域混合：FinQA、R1-Code、Countdown、MATH；另有 DeepScaleR/MATH/Arithmetic 单域分析。原文未统一给出最终训练池数量。",
+      "eval_data": "FinQA、代码、Countdown、MATH-500 等相应留出评测；另有单域梯度分析。",
+      "figure_number": "1",
+      "figure_page": 2,
+      "figure_crop": [
+        68,
+        68,
+        528,
+        305
+      ],
+      "figure_path": "img/imbalanced-gradients.png",
+      "figure_caption": "原文 RL 训练诊断图，展示不同任务训练行为；论文没有独立方法架构图。",
+      "pdf_sha256": "41e316607c4d75544ffe2b1d24dae200c4b48cc805ea01c2f8d5321bd8c2cec9",
+      "code_url": null,
+      "evidence": [
+        {
+          "url": "https://aclanthology.org/2026.findings-eacl.164.pdf",
+          "location": "§2，PDF pp.2–3",
+          "note": "多任务 GRPO 训练明确包含金融文本和表格 QA 的 FinQA。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.findings-eacl.164.pdf",
+          "location": "§3 / Appendix C",
+          "note": "均匀与梯度范数驱动采样的实验设置；没有宣称采样在所有任务稳定提高性能。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.findings-eacl.164.pdf",
+          "location": "Fig.1，PDF p.2",
+          "note": "原文训练诊断图，作为无独立架构图论文的明确替代。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.findings-eacl.164/",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "通用 RL 训练实证研究，包含 FinQA；图为训练诊断，非 RL 架构图。",
+      "date_basis": "首次预印本：2025-10-22，https://arxiv.org/abs/2510.19178；方法与图采用正式 EACL 2026 版本。"
+    },
+    {
+      "slug": "tablegpt-r1",
+      "title": "TableGPT-R1: Advancing Tabular Reasoning Through Reinforcement Learning",
+      "date": "2025-12-23",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2512.20312",
+      "pdf_url": "https://arxiv.org/pdf/2512.20312v2",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "SFT + 三阶段 GRPO++",
+      "method_zh": "以少量 SFT 热启动，再按通用推理、表格工具交互和困难样本三阶段训练。GRPO++ 使用序列重要性权重、解耦裁剪和熵正则；奖励结合可执行答案规则、注入评价标准的模型评判及中间代码执行反馈。",
+      "sft_data": "约占整体训练池 3% 的热启动样本；训练池绝对规模未报告。",
+      "rl_data": "公开通用推理数据 + 合成表格代理 QA；通过多模型答案一致性筛选及 pass@k 难度过滤进入后续阶段。原文未完整公开各数据集名称与分项数量。",
+      "eval_data": "TableBench（含事实验证）、内部表格代理 QA；Spider/BIRD、LiveCodeBench 与通用推理基准。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_crop": [
+        106,
+        69,
+        507,
+        219
+      ],
+      "figure_path": "img/tablegpt-r1.png",
+      "figure_caption": "TableGPT-R1 分阶段训练、奖励与优化框架。",
+      "pdf_sha256": "0d98b34a855650693b7afb637d329f7d169174a28fdb289225939d55e520f2ce",
+      "code_url": null,
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2512.20312v2",
+          "location": "§2 / Fig.2，PDF pp.3–4；GRPO++ 与奖励，PDF pp.8–10",
+          "note": "SFT 与三阶段 GRPO++；规则、评价标准注入奖励及步骤反馈。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2512.20312v2",
+          "location": "§3.5，PDF pp.10–11",
+          "note": "合成表格 QA、一致性筛选、3% SFT 热启动和困难题选择；绝对训练量未完整披露。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2512.20312v2",
+          "location": "TableBench 实验 / Appendix",
+          "note": "表格 QA 与事实验证实验，不能将所有评测集自动填入 RL 数据列。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2512.20312",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "caveats": [
+        "作者发布模型 https://huggingface.co/tablegpt/TableGPT-R1；未核实到官方训练代码仓库。"
+      ],
+      "pdf_version": "arXiv v2，2025-12-25"
+    },
+    {
+      "slug": "tablemind",
+      "title": "TableMind: An Autonomous Programmatic Agent for Tool-Augmented Table Reasoning",
+      "date": "2025-09-08",
+      "venue": "arXiv（v4 原文标注 WSDM 2026）",
+      "paper_url": "https://arxiv.org/abs/2509.06278",
+      "pdf_url": "https://arxiv.org/pdf/2509.06278v4",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "轨迹 SFT + RAPO",
+      "method_zh": "代理循环执行规划、Python 工具调用与反思。少量正确轨迹热启动后，RAPO 增强被当前策略低估的高质量轨迹优势；联合格式、答案准确性、工具成功及轮次成本奖励训练自主表格推理。",
+      "sft_data": "200 条经过筛选的合成多轮工具推理轨迹。",
+      "rl_data": "按 Table 1：TabFact 3,500 + TabMWP 3,500 + WikiTQ 1,000，共 8,000；正文对来源的描述存在不一致，见证据卡。",
+      "eval_data": "TabFact、TabMWP、WikiTQ；HiTab、FinQA 域外测试（按 Table 1）。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_crop": [
+        52,
+        81,
+        561,
+        340
+      ],
+      "figure_path": "img/tablemind.png",
+      "figure_caption": "TableMind 代理交互与两阶段训练。",
+      "pdf_sha256": "d57e823a20b742b733dd51ad1f4b435f56853d807ff853f2de84e452c7e2a505",
+      "code_url": "https://github.com/ustc-table-mining/TableMind",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2509.06278v4",
+          "location": "§4 / Fig.2，PDF pp.3–4；Implementation Details，PDF p.6",
+          "note": "200 条 SFT 轨迹、RAPO 目标及多视角工具奖励。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2509.06278v4",
+          "location": "Table 1 / §5.1.1，PDF pp.5–6",
+          "note": "Table 1 明确 RL 数据及规模；正文提及的训练来源与表中 HiTab/FinQA OOD 位置冲突。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2509.06278v4",
+          "location": "§5，PDF pp.5–8",
+          "note": "文本表格 QA、事实验证和域外表格推理实验。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2509.06278",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "caveats": [
+        "训练来源采用明确的 Table 1；§5.1.1 正文提到 HiTab/FinQA 用于训练，与表中其 OOD-only 标记不一致。",
+        "arXiv 元数据仍写 Submitted to WSDM 2026；所列 v4 PDF 有 WSDM 2026 页脚，不据此单独断言录用状态。",
+        "相关扩展 TableMind++（https://arxiv.org/abs/2603.07528）沿用此 RL 训练框架，新增重点是推理时的记忆、动作精炼与聚合；按方法家族去重，不重复计数。"
+      ],
+      "pdf_version": "arXiv v4，2026-07-26"
+    },
+    {
+      "slug": "jt-da",
+      "title": "JT-DA: Enhancing Data Analysis with Tool-Integrated Table Reasoning Large Language Models",
+      "date": "2025-12-07",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2512.06859",
+      "pdf_url": "https://arxiv.org/pdf/2512.06859v1",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "多模式 SFT + GRPO",
+      "method_zh": "构造文本 CoT、程序 PoT 与交织 ICoT 的表格分析轨迹，经质量评分和任务平衡后做 SFT；再对新的表格任务用无 KL 的 token 级 GRPO，以回答正确性和推理格式奖励提升沙箱工具推理。",
+      "sft_data": "汇集 29 个公开表格数据集（如 AIT-QA、ToTTo、HybridQA、TableBench）及约 300 万张原始表，合成并筛选 34 类任务轨迹；300 万是表格数，并非最终 SFT 样本数。",
+      "rl_data": "约 3,000 条未用于此前训练阶段的新表格任务 QA；提供部分结构与 CSV 路径，支持沙箱读取大表。",
+      "eval_data": "TReB：表格理解、基础操作、计算、数据分析、高级数据分析，比较 TCoT/PoT/ICoT。",
+      "figure_number": "2",
+      "figure_page": 3,
+      "figure_crop": [
+        68,
+        342,
+        527,
+        448
+      ],
+      "figure_path": "img/jt-da.png",
+      "figure_caption": "JT-DA 整体数据、训练与表格代理架构。",
+      "pdf_sha256": "5e6c09a20c1caa62cd780e54def83382ab07ac4867eccafa85dd77a7b91d24ec",
+      "code_url": "https://github.com/JT-LM/JT-DA-8B",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2512.06859v1",
+          "location": "§2.2，PDF pp.6–7",
+          "note": "29 个公开数据集与约 300 万张表的来源；最终轨迹另经生成与过滤。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2512.06859v1",
+          "location": "§5.1–5.3，PDF p.15",
+          "note": "约 3,000 新 QA、GRPO token 级目标，去除 KL；答案和格式奖励。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2512.06859v1",
+          "location": "§7.1.1 / Table 3，PDF pp.19–20",
+          "note": "TReB 任务与 SFT/RL 模型对照。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2512.06859v1",
+          "location": "Fig.2，PDF p.3",
+          "note": "原文整体框架。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2512.06859",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "pdf_version": "arXiv v1"
+    },
+    {
+      "slug": "thinking-with-tables",
+      "title": "Thinking with Tables: Enhancing Multi-Modal Tabular Understanding via Neuro-Symbolic Reasoning",
+      "date": "2026-03-25",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2603.24004",
+      "pdf_url": "https://arxiv.org/pdf/2603.24004v1",
+      "modality": "multimodal",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "TO-SFT + AL-GRPO",
+      "method_zh": "VLM 读取视觉表头并通过 Python 沙箱操作完整 CSV，以神经符号交互回答问题。TO-SFT 学习工具轨迹；AL-GRPO 根据最终任务结果给奖励，只让成功执行的代码片段参与 RL 损失，减少不可执行动作的干扰。",
+      "sft_data": "TO-SFT：1.5K QA（WikiTQ、TabMWP、FinQA、TAT-QA）+ 1.2K 表格预测（Adoption、SkinCA、Pawpularity、Paintings）；由 Qwen3-VL-Plus / Qwen3-Max 合成。",
+      "rl_data": "上述池选取 0.5K QA + 0.4K 表格预测用于 AL-GRPO；分类/回归是表格预测任务，不标为 TFV。",
+      "eval_data": "四个表格 QA 基准与四个多模态预测数据集。QA 提供视觉表头及可由工具访问的完整 CSV。",
+      "figure_number": "3",
+      "figure_page": 5,
+      "figure_crop": [
+        78,
+        65,
+        520,
+        317
+      ],
+      "figure_path": "img/thinking-with-tables.png",
+      "figure_caption": "原文表格工具推理交互流程；RL 训练细节见 §4.3。",
+      "pdf_sha256": "2feae66d8bb5173a5c36b8bba1dc36bc71e2453e9e29d36d02e0a30281648101",
+      "code_url": "https://github.com/kunyang-YU/Thinking-with-Tables",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2603.24004v1",
+          "location": "§4.3，PDF pp.5–6",
+          "note": "TO-SFT 与 AL-GRPO；执行反馈掩码和成功代码动作的梯度。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2603.24004v1",
+          "location": "§5.1，PDF p.7",
+          "note": "SFT 1.5K+1.2K；RL 0.5K+0.4K；QA 视觉表头与 CSV 输入。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2603.24004v1",
+          "location": "Fig.3，PDF p.5",
+          "note": "原文神经符号工具交互流程。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2603.24004",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "QA 的视觉输入是表头，完整表格通过 CSV 工具访问；另有多模态表格预测任务。",
+      "pdf_version": "arXiv v1"
+    },
+    {
+      "slug": "defacto",
+      "title": "DeFacto: Counterfactual Thinking with Images for Enforcing Evidence-Grounded and Faithful Reasoning",
+      "date": "2025-09-25",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2509.20912",
+      "pdf_url": "https://arxiv.org/pdf/2509.20912v4",
+      "modality": "multimodal",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "反事实对齐 + Counterfactual GRPO",
+      "method_zh": "为图像问题构造原图、关键证据遮挡图和随机非关键遮挡图；GRPO 联合答案、格式与证据框奖励，让关键证据缺失时输出 Unknown，并约束回答依赖真实图像证据。在视觉 WTQ 上评测表格问答迁移。",
+      "sft_data": "Table 4 消融包含原始数据 SFT 和反事实对齐；所列版本未单列 SFT 数据量或阶段配比。",
+      "rl_data": "DeFacto-100K（约 10 万图像；VQAv2、ChartQA、DocVQA 等来源），构造正样本/关键遮挡/随机遮挡三类训练输入；未单列 WTQ 训练占比。",
+      "eval_data": "视觉 WikiTableQuestions（Table 3）；DeFacto-1.5K 含 100 条 WTQ 与其他 14 个视觉任务，属于评测集。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_crop": [
+        54,
+        65,
+        544,
+        344
+      ],
+      "figure_path": "img/defacto.png",
+      "figure_caption": "证据定位、反事实遮挡与 GRPO 的整体方法。",
+      "pdf_sha256": "3aa494d26c5ce29c8288cd24068512a316719b606aae0f01eaaa3a0de0656e2d",
+      "code_url": "https://github.com/tinnel123666888/defacto",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2509.20912v4",
+          "location": "§3.2，PDF pp.3–4",
+          "note": "DeFacto-100K 来源和反事实证据遮挡；没有报告 WTQ 专属 RL 训练量。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2509.20912v4",
+          "location": "§3.3 / Fig.2，PDF pp.4–5",
+          "note": "实际 GRPO、答案与视觉证据奖励。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2509.20912v4",
+          "location": "Tables 3–4，PDF pp.7–8",
+          "note": "WTQ 表格问答评测及 SFT/反事实对齐/GRPO 消融。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2509.20912",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "通用视觉 RL 方法，表格任务的明确证据是视觉 WTQ 评测；不据此推断 WTQ 参与训练。",
+      "caveats": [
+        "DeFacto-1.5K 是评测集，不可填入训练数据。"
+      ],
+      "pdf_version": "arXiv v4，2026-05-21"
+    },
+    {
+      "slug": "acpo",
+      "title": "What are Key Factors for Updates in RL for LLM Reasoning?",
+      "date": "2026-06-21",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2606.22570",
+      "pdf_url": "https://arxiv.org/pdf/2606.22570v2",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "Adaptive Clip Policy Optimization（ACPO）",
+      "method_zh": "分析 rollout 后更新次数导致的重要性采样与梯度偏移；按行为 token 概率分组，以各组重要性比率的经验方差动态设置裁剪边界。使用 GRPO 类相对优势，分别训练表格 QA、数学与逻辑推理模型。",
+      "sft_data": "未新增 SFT；从 Qwen 系列模型进行 RL。",
+      "rl_data": "表格 QA 实验单独在 HiTab 上训练；其他实验分别使用 ORZ 57K 数学数据与 Countdown。未报告 HiTab 最终训练子集数量。",
+      "eval_data": "HiTab；数学和 Countdown 对照。Table 1(b) 为 HiTab 训练后的最佳验证奖励，正文与表注对验证/测试口径有差异。",
+      "figure_number": "1",
+      "figure_page": 2,
+      "figure_crop": [
+        145,
+        70,
+        467,
+        210
+      ],
+      "figure_path": "img/acpo.png",
+      "figure_caption": "原文理论分析、梯度因素与 ACPO 方法概览。",
+      "pdf_sha256": "00c1918fdef22c68675f69637f26c38920be157cd6bc4253d00e0c5359953c5e",
+      "code_url": "https://github.com/Control-derek/ACPO",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/pdf/2606.22570v2",
+          "location": "§4，PDF pp.6–7",
+          "note": "按概率分箱、估计重要性比率方差并自适应裁剪。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2606.22570v2",
+          "location": "§5.1 / Table 1(b)，PDF p.8",
+          "note": "明确独立的 HiTab 训练；不是只在通用 RL 模型上测试表格。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2606.22570v2",
+          "location": "Fig.1，PDF p.2",
+          "note": "原文分析与 ACPO 方法概览。"
+        },
+        {
+          "url": "https://arxiv.org/abs/2606.22570",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "caveats": [
+        "Table 1 注释报告 best validation reward；正文称 avg@4 test accuracy，解读时应保留该口径差异。"
+      ],
+      "aliases": [
+        "ACPO"
+      ],
+      "pdf_version": "arXiv v2，2026-09-19",
+      "date_basis": "采用可核实的 arXiv 首次提交 2026-06-21；存在更早同标题匿名 OpenReview 版本，但其首次公开日期本次未核实，未断言会议录用。"
+    },
+    {
+      "slug": "docr1",
+      "title": "DocR1: Evidence Page-Guided GRPO for Multi-Page Document Understanding",
+      "date": "2025-08-10",
+      "venue": "AAAI 2026",
+      "paper_url": "https://ojs.aaai.org/index.php/AAAI/article/view/38097",
+      "pdf_url": "https://ojs.aaai.org/index.php/AAAI/article/download/38097/42059",
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "Evidence Page-Guided GRPO（EviGRPO）",
+      "method_zh": "用单页→多页课程训练 Qwen2.5-VL，先定位证据页再回答。GRPO 联合答案 ANLS、证据页 F1 与输出格式奖励，降低多页定位错误；两阶段均为 RL，教师标注过程不等于 SFT。",
+      "sft_data": "未新增 SFT；直接从 Qwen2.5-VL-7B-Instruct 进入两阶段 EviGRPO。",
+      "rl_data": "EviBench 4,800：单页 1,300（13 来源各 100，含 WTQ 与 TabFact）；多页 3,500（DUDE 1,000，MP-DocVQA/TATDoc/SlideVQA/MultiHiertt/ArxivFullQA 各 500）。",
+      "eval_data": "WTQ、TabFact、DocVQA 等单页基准；MP-DocVQA、DUDE、SlideVQA、MultiChartQA、MultiHiertt、TATDoc、ArxivFullQA 等多页基准。",
+      "figure_number": "2",
+      "figure_page": 3,
+      "figure_crop": [
+        53,
+        53,
+        560,
+        261
+      ],
+      "figure_path": "img/docr1.png",
+      "figure_caption": "单页到多页课程的 EviGRPO 训练框架。",
+      "pdf_sha256": "d7ebebe94558d017884f2011818ed07aa0e3a7114aebf099613aab1243f6094e",
+      "code_url": null,
+      "evidence": [
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/download/38097/42059",
+          "location": "Data Construction / Curriculum Learning，PDF pp.3–5",
+          "note": "EviBench 4,800，单页和多页来源与课程 RL 阶段。"
+        },
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/download/38097/42059",
+          "location": "Implementation Details，PDF p.5",
+          "note": "无需额外 SFT；两阶段分别一轮 GRPO。"
+        },
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/download/38097/42059",
+          "location": "Table 1 / 单页实验，PDF pp.4–6",
+          "note": "WTQ、TabFact 是训练来源和明确评测任务。"
+        },
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/download/38097/42059",
+          "location": "Fig.2，PDF p.3",
+          "note": "原文 EviGRPO 框架。"
+        },
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/view/38097",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "多页文档 RL，训练池明确包含视觉表格 QA 和 TabFact 事实验证。",
+      "caveats": [
+        "ArxivFullQA 8.6K 是完整论文 QA 评测规模，不能当成 RL 训练量；EviBench 仅使用其中 500 条训练样本。",
+        "多页金融来源按原文命名为 TATDoc，保留其原始称呼。"
+      ],
+      "date_basis": "预印本首次提交：2025-08-10，https://arxiv.org/abs/2508.07313；图与方法采用 AAAI 2026 正式 PDF。"
+    },
+    {
+      "slug": "tiny-r1v",
+      "title": "Towards Efficient Multimodal Unified Reasoning Model via Model Merging",
+      "date": "2025-10-10",
+      "venue": "CVPR Findings 2026",
+      "paper_url": "https://openaccess.thecvf.com/content/CVPR2026F/html/Yin_Towards_Efficient_Multimodal_Unified_Reasoning_Model_via_Model_Merging_CVPRF_2026_paper.html",
+      "pdf_url": "https://openaccess.thecvf.com/content/CVPR2026F/papers/Yin_Towards_Efficient_Multimodal_Unified_Reasoning_Model_via_Model_Merging_CVPRF_2026_paper.pdf",
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "Length-Informed Relative Policy Optimization（LIPO）+ AMM",
+      "method_zh": "分别以 LIPO 训练数学、结构数据和 OCR 专家，按回答长度调整奖励与相对优势，偏向简洁而正确的推理；再用 AMM 合并专家任务向量。强化学习发生在专家训练阶段，模型合并阶段不做 RL。",
+      "sft_data": "未新增冷启动 SFT；从 Qwen2.5-VL-3B-Instruct 直接训练三个专家。",
+      "rl_data": "结构数据专家 15K：TAT-DQA、WTQ、TabFact、PlotQA、TQA、ChartGalaxy；另有数学专家 15K 和 OCR 专家 10K。15K 是混合结构数据量，并非全部为表格 QA。",
+      "eval_data": "主结果结构数据评测为 ChartQA/CharXiv；另有数学、OCR、通用多模态基准。未单列 WTQ/TabFact 留出测试结果。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_crop": [
+        57,
+        72,
+        555,
+        349
+      ],
+      "figure_path": "img/tiny-r1v.png",
+      "figure_caption": "LIPO 专家训练与 AMM 合并的 Tiny-R1V 方法。",
+      "pdf_sha256": "ed8e9ad67c097e6acb1ed4ab6a88d819e97cb0f017b56961274396f6af100a63",
+      "code_url": "https://github.com/buptyqx/Tiny-R1V",
+      "evidence": [
+        {
+          "url": "https://openaccess.thecvf.com/content/CVPR2026F/papers/Yin_Towards_Efficient_Multimodal_Unified_Reasoning_Model_via_Model_Merging_CVPRF_2026_paper.pdf",
+          "location": "§3 / Fig.2，PDF pp.3–5",
+          "note": "LIPO 的长度奖励/优势调整与 AMM 两阶段框架。"
+        },
+        {
+          "url": "https://openaccess.thecvf.com/content/CVPR2026F/papers/Yin_Towards_Efficient_Multimodal_Unified_Reasoning_Model_via_Model_Merging_CVPRF_2026_paper.pdf",
+          "location": "§4.1 / Table 2，PDF p.6",
+          "note": "明确 WTQ、TabFact 等结构数据专家 RL 来源；无冷启动。"
+        },
+        {
+          "url": "https://openaccess.thecvf.com/content/CVPR2026F/papers/Yin_Towards_Efficient_Multimodal_Unified_Reasoning_Model_via_Model_Merging_CVPRF_2026_paper.pdf",
+          "location": "Table 1，PDF p.5",
+          "note": "主结果评测以图表等为主，没有单列 WTQ/TabFact 测试。"
+        },
+        {
+          "url": "https://openaccess.thecvf.com/content/CVPR2026F/html/Yin_Towards_Efficient_Multimodal_Unified_Reasoning_Model_via_Model_Merging_CVPRF_2026_paper.html",
+          "location": "论文元数据 / 版本记录",
+          "note": "标题、日期与公开版本来源；采用下述日期说明（如有）。"
+        }
+      ],
+      "scope_note": "表格 QA/TFV 明确参与 RL 训练；主结果未单列这两个表格任务的测试。",
+      "caveats": [
+        "作者仓库当前主要提供论文、说明和图；训练代码未发布。仓库整理的数据源文件规模不是 Table 2 的实际抽样训练数量。"
+      ],
+      "aliases": [
+        "Tiny-R1V"
+      ],
+      "code_status": "author repository placeholder",
+      "date_basis": "预印本首次提交 2025-10-10：https://arxiv.org/abs/2510.08987；图与方法采用 CVPR Findings 2026 正式 PDF。"
     }
   ]
 }
