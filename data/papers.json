@@ -1,0 +1,1547 @@
+{
+  "title": "Awesome RL for Table Understanding",
+  "start_date": "2023-10-02",
+  "as_of": "2026-10-02",
+  "timezone": "Asia/Shanghai",
+  "papers": [
+    {
+      "slug": "twsg",
+      "title": "Think with Structured Grounding: Perceptual Reinforcement Learning for Chart and Visual-Tabular Understanding",
+      "date": "2026-08-23",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2608.22429",
+      "pdf_url": "https://arxiv.org/pdf/2608.22429v1",
+      "code_url": null,
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "Cold-start SFT + TL-GRPO",
+      "method_zh": "先蒸馏区域定位、局部观察与交错推理轨迹，再用 TL-GRPO 按 think/observation/answer 标签分别归一化重要性权重；奖励结合答案 ANLS、格式与视觉观察核验，CGS 去除组内优势离群样本。",
+      "sft_data": "TwSG-12K：12,674 条；Appendix E 将来源写作 TableQA、TableQA-X、Visual-TableQA，含合成多图表/多表格布局。",
+      "rl_data": "64,334 条：原 SFT 数据及 ChartQA、ChartQA-X、Visual-TableQA 训练集，用 SFT checkpoint 四次采样后去除全对样本。",
+      "eval_data": "TableVQA-Bench（VWTQ、VWTQ-Syn、VTabFact、FinTabNetQA）；ChartQA、ChartQAPro、CharXiv-R。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_caption": "Comparison of token, sequence and functional-tag importance sampling.",
+      "figure_crop": [
+        71,
+        586,
+        542,
+        699
+      ],
+      "figure_path": "img/twsg.png",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2608.22429",
+          "location": "Submission history",
+          "note": "First submitted 23 August 2026."
+        },
+        {
+          "url": "https://arxiv.org/html/2608.22429v1#S3",
+          "location": "Sections 3.1–3.2; Appendix E",
+          "note": "SFT 12,674; RFT 64,334; tag-level optimization and visual verification rewards."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2608.22429v1",
+          "location": "Figure 2, PDF page 4; Table 1, page 7",
+          "note": "Original RL method schematic and explicit visual-table benchmark evaluation."
+        }
+      ],
+      "caveats": [
+        "同时覆盖 chart 与 visual table；因明确在 TableVQA-Bench 上实验而纳入。",
+        "SFT 附录写 TableQA/TableQA-X，RFT 正文写 ChartQA/ChartQA-X，来源名称存在不一致，未自行改写。",
+        "未发现经作者确认的官方代码链接。"
+      ],
+      "pdf_sha256": "a7e5423a54e2051ce348777610ea2b11db7018eeafa4848712d9a0b6218995c3",
+      "pdf_file": "tmp/pdfs/twsg.pdf"
+    },
+    {
+      "slug": "dre-critic",
+      "title": "When LLMs Read Tables Carelessly: Measuring and Reducing Data Referencing Errors",
+      "date": "2026-06-30",
+      "venue": "ACL 2026 Main",
+      "paper_url": "https://aclanthology.org/2026.acl-long.762/",
+      "pdf_url": "https://aclanthology.org/2026.acl-long.762.pdf",
+      "code_url": "https://github.com/ayyyq/table-referencing",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "model_role": "RL-trained data-referencing critic",
+      "algorithm": "SFT + RLVR / GRPO",
+      "method_zh": "训练 Critic-4B 检测推理片段中的单元格误引与遗漏。先蒸馏 Sonnet-3.7 判断做 SFT，再以经核验的 True/False 标签为奖励做 GRPO；推理时用 critic 过滤候选或局部拒绝采样，从而减少错误数据引用。",
+      "sft_data": "WTQ 训练集上 Qwen3-8B 生成的响应片段；Sonnet-3.7 标注的 2,000 条正负平衡样本，SFT 2 epochs。",
+      "rl_data": "同一 WTQ 响应片段来源的 5,712 条，GRPO 20 epochs、每题 8 rollouts。另有规则插入四类 DRE 的 synthetic critic 对照。",
+      "eval_data": "训练后 critic：WTQ、TableBench（Fact Checking + Numerical Reasoning）、FinQA × 三个生成模型，共 3,600 条正负平衡片段；并在这三个基准检验拒绝采样。SciTab/ToTTo 仅用于前面的通用模型错误分析。",
+      "figure_number": "6",
+      "figure_page": 17,
+      "figure_caption": "Critic Prompt for small-scale LLMs (method specification, not an RL architecture diagram).",
+      "figure_crop": [
+        70,
+        205,
+        526,
+        615
+      ],
+      "figure_path": "img/dre-critic.png",
+      "pdf_sha256": "3e325c8ef81705d209a5eafecd9efed7fc13595cb0666fa6a77bfaab3102eb29",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2606.32029",
+          "location": "Submission history",
+          "note": "First submitted 30 June 2026."
+        },
+        {
+          "url": "https://aclanthology.org/2026.acl-long.762/",
+          "location": "Bibliographic metadata",
+          "note": "ACL 2026 main long paper, July 2026."
+        },
+        {
+          "url": "https://aclanthology.org/2026.acl-long.762.pdf",
+          "location": "Section 5.1 PDF page 7; Appendix D page 13",
+          "note": "Actual critic SFT warm-up + GRPO, with 2,000 SFT and 5,712 RL segments; 20 epochs and G=8."
+        },
+        {
+          "url": "https://aclanthology.org/2026.acl-long.762.pdf",
+          "location": "Sections 5.2–5.3 pages 7–8; Figure 6 page 17",
+          "note": "Critic evaluation 3,600 samples on WTQ/TableBench/FinQA; original method prompt figure, no dedicated RL architecture figure."
+        },
+        {
+          "url": "https://github.com/ayyyq/table-referencing",
+          "location": "Training Critic-4B; Supported Datasets",
+          "note": "Author code confirms binary-label GRPO, data files and actual TableBench FactChecking/NumericalReasoning tasks."
+        }
+      ],
+      "caveats": [
+        "RL 更新的是错误引用 critic，生成答案的模型通过推理时过滤/拒绝采样改善，未在本文用 RL 重训。",
+        "SciTab/ToTTo 出现在错误分析中，不能据此声称训练后的 Critic-4B 做了 T2T 实验。",
+        "论文没有单独的 RL 方法架构图，所提取 Fig.6 是 critic 输入和判断流程的提示图。",
+        "论文与主数据版本日期按 arXiv/ACL 核实；作者仓库引用条目的 year=2025 与正式 metadata 不一致，未采用。"
+      ],
+      "pdf_file": "tmp/pdfs/dre-critic.pdf",
+      "scope_note": "RL 训练表格引用错误 critic；原图为 critic 提示示意，论文未单列 RL 架构图。"
+    },
+    {
+      "slug": "tablemix",
+      "title": "TableMix: Enhancing Multimodal Table Reasoning in MLLMs from a Data-Centric Perspective",
+      "date": "2026-06",
+      "date_precision": "month",
+      "venue": "CVPR 2026",
+      "paper_url": "https://openaccess.thecvf.com/content/CVPR2026/html/Liu_TableMix_Enhancing_Multimodal_Table_Reasoning_in_MLLMs_from_a_Data-Centric_CVPR_2026_paper.html",
+      "pdf_url": "https://openaccess.thecvf.com/content/CVPR2026/papers/Liu_TableMix_Enhancing_Multimodal_Table_Reasoning_in_MLLMs_from_a_Data-Centric_CVPR_2026_paper.pdf",
+      "code_url": null,
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "GRPO + Difficulty-Aware Reward Shaping (DRS)",
+      "method_zh": "按 batch 混合视觉表格推理、纯文本数学与简单表格感知数据，用 GRPO 同时恢复逻辑推理并保持视觉定位；DRS 根据组内成功率和退火长度惩罚，让简单问题的正确回答更简洁。",
+      "sft_data": "主训练流程未报告单独 SFT 阶段；基座为 Qwen2.5-VL-7B。",
+      "rl_data": "表格来源：TabMWP、WTQ、HiTab、TAT-QA、FeTaQA、ToTTo、TabFact、FEVEROUS、HybridQA、FinQA、MultiModalQA、InfoTabs；数学默认 MetaMath；另规则生成单元格定位 QA。混合比例 0.7:0.2:0.1。",
+      "eval_data": "TabMWP、WTQ、HiTab、TAT-QA、FeTaQA、TabFact、InfoTabs；held-out TableVQA-Bench。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_caption": "Mixed training batches and difficulty-dependent GRPO reward shaping.",
+      "figure_crop": [
+        54,
+        68,
+        558,
+        263
+      ],
+      "figure_path": "img/tablemix.png",
+      "evidence": [
+        {
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/papers/Liu_TableMix_Enhancing_Multimodal_Table_Reasoning_in_MLLMs_from_a_Data-Centric_CVPR_2026_paper.pdf",
+          "location": "Sections 3.2–3.4, PDF pages 4–6",
+          "note": "Actual GRPO with DRS; source corpus construction and default MetaMath data."
+        },
+        {
+          "url": "https://openaccess.thecvf.com/content/CVPR2026/papers/Liu_TableMix_Enhancing_Multimodal_Table_Reasoning_in_MLLMs_from_a_Data-Centric_CVPR_2026_paper.pdf",
+          "location": "Section 4.1, page 6; Figure 2, page 4",
+          "note": "Mixing ratios 0.7/0.2/0.1, evaluation datasets and original framework figure."
+        }
+      ],
+      "caveats": [
+        "公开来源仅核实到 CVPR 2026 的 6 月会议版本；日期精度为月。",
+        "ToTTo 是训练语料来源，不应据此声称评估了 T2T。",
+        "GSM8K、Geo3K、DeepScaleR 是数学数据消融，不是默认数学训练集。",
+        "未发现经作者确认的官方代码链接。"
+      ],
+      "pdf_sha256": "35e55c93fd14acba4b9ed035002fc22323146a020359a0c638d1ebe8ea8d1095",
+      "pdf_file": "tmp/pdfs/tablemix.pdf"
+    },
+    {
+      "slug": "rsat",
+      "title": "RSAT: Structured Attribution Makes Small Language Models Faithful Table Reasoners",
+      "date": "2026-04-30",
+      "venue": "ACL 2026 SURGeLLM Workshop (accepted; arXiv v2)",
+      "paper_url": "https://arxiv.org/abs/2605.00199",
+      "pdf_url": "https://arxiv.org/pdf/2605.00199v2",
+      "code_url": "https://github.com/JugalGajjar/RSAT",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "SFT + GRPO",
+      "method_zh": "先用带单元格坐标引用的 JSON 推理轨迹做 SFT，再用 GRPO 优化答案 F1、引用坐标有效性、DeBERTa NLI 证据蕴含分数和引用简约性，并对无效 JSON 惩罚；使小模型的每步推理可追溯到表格单元格。",
+      "sft_data": "WikiTableQuestions、FeTaQA、TabFact；Claude Opus 4.5 生成 1,000 条轨迹，训练 900 条（630/135/135），验证 100 条。",
+      "rl_data": "相同三个数据集的 table-question-answer 池；候选训练池 38,647 条，但每个模型实际抽取 500 条进行 GRPO。",
+      "eval_data": "WTQ/FeTaQA/TabFact 的混合 held-out test 池；实际评估 500 条。",
+      "figure_number": "1",
+      "figure_page": 3,
+      "figure_caption": "RSAT overview: verified-trace SFT followed by composite-reward GRPO.",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2605.00199",
+          "location": "Submission history and comments",
+          "note": "First submitted 30 April 2026; v2 7 May; accepted SURGeLLM ACL 2026."
+        },
+        {
+          "url": "https://arxiv.org/html/2605.00199v2#S3",
+          "location": "Sections 3.2–3.5, Table 1",
+          "note": "Actual GRPO optimization, composite reward, source datasets and actual 500-example subsampling."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2605.00199v2",
+          "location": "Figure 1, PDF page 3",
+          "note": "Original method overview diagram."
+        }
+      ],
+      "caveats": [
+        "FeTaQA 属于自由形式 TQA，不能标作传统无问题输入的 T2T。",
+        "忠实度奖励和主要评估指标使用同一个 NLI 模型；论文承认仍需人工评估验证。",
+        "训练数据池大小不能当作实际 GRPO 样本数。"
+      ],
+      "figure_crop": [
+        69,
+        68,
+        526,
+        244
+      ],
+      "figure_path": "img/rsat.png",
+      "pdf_sha256": "b59be9e87661763e32163b4825060b02b69cb16f6279c6070f9290a048bf2a83",
+      "pdf_file": "tmp/pdfs/rsat.pdf"
+    },
+    {
+      "slug": "v_tabler1",
+      "title": "V-tableR1: Process-Supervised Multimodal Table Reasoning with Critic-Guided Policy Optimization",
+      "date": "2026-04-22",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2604.20755",
+      "pdf_url": "https://arxiv.org/pdf/2604.20755v1",
+      "code_url": null,
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "SFT + Process-Guided Direct Alignment Policy Optimization (PGPO)",
+      "method_zh": "策略 VLM 生成含单元格坐标的视觉 CoT，独立 critic VLM 核验中间步骤；过程分数门控答案和格式奖励，配合解耦 clipping 与长度感知采样，惩罚幻觉和猜中答案的错误推理。",
+      "sft_data": "TabFact 5,250；FinQA 2,569；HiTab 3,195；TabMWP 4,412；WTQ 5,738，共 21,164 条视觉 CoT。critic 用真实/核验轨迹与 Qwen3-8B 扰动的负例。",
+      "rl_data": "TabFact 3,648；FinQA 583；HiTab 1,546；TabMWP 3,791；WTQ 5,887，共 15,455 条。",
+      "eval_data": "TabFact、FinQA、HiTab、TabMWP、WTQ；InfoTabs 与 TAT-QA 仅测试。",
+      "figure_number": "2",
+      "figure_page": 6,
+      "figure_caption": "Policy visual reasoning, critic verification and PGPO updates.",
+      "figure_crop": [
+        132,
+        112,
+        486,
+        346
+      ],
+      "figure_path": "img/v_tabler1.png",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2604.20755",
+          "location": "Submission history",
+          "note": "First submitted 22 April 2026."
+        },
+        {
+          "url": "https://arxiv.org/html/2604.20755v1#S3",
+          "location": "Section 3.2",
+          "note": "Critic-gated process reward, decoupled clipping and dynamic sampling."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2604.20755v1",
+          "location": "Table 1, page 10; Figure 2, page 6",
+          "note": "Separate SFT and RL source counts; original method figure."
+        }
+      ],
+      "caveats": [
+        "InfoTabs、TAT-QA 在 Table 1 的训练列为横线，只能标为评测集。",
+        "搜索找到的 Arxiv-to-code 自动实现仓库不属于作者官方代码，未采用。"
+      ],
+      "pdf_sha256": "04a2204224bc12cc7edff65a4e08dcdcf455deb2726157a2f3bf7004ed9af7a1",
+      "pdf_file": "tmp/pdfs/v_tabler1.pdf"
+    },
+    {
+      "slug": "tarex",
+      "title": "TaREx: Reinforcement Learning for Code-Driven Table Reasoning",
+      "date": "2026-03-14",
+      "date_basis": "正式论文发布日期；未核实更早预印本日期",
+      "venue": "AAAI 2026",
+      "paper_url": "https://ojs.aaai.org/index.php/AAAI/article/view/40415",
+      "pdf_url": "https://ojs.aaai.org/index.php/AAAI/article/download/40415/44376",
+      "code_url": null,
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "Data Analysis"
+      ],
+      "algorithm": "GRPO + DAPO clip-higher",
+      "method_zh": "统一用 DataFrame 表示不同结构的表格，让策略在最多五轮交互中生成 Python、读取执行反馈并作答。使用 GRPO 的组内优势和 DAPO 非对称裁剪，以格式与答案奖励训练；过滤超时、无效和停滞轨迹来稳定更新。",
+      "sft_data": "无额外 SFT 或蒸馏，直接对 Qwen2.5-7B-Instruct 做 RL。",
+      "rl_data": "过滤后的 WikiTQ 9,472、MultiHiertt 5,119、FinQA 4,333、TAT-QA 8,085、HiTab 4,888、TabFact 15,087 条（共 46,984）。",
+      "eval_data": "上述六个数据集与去除图像需求的 MultiModalQA 子集；域外含 RealHiTBench、AIT-QA、TableBench、TabularGSM、OTT-QA、FEVEROUS。",
+      "figure_number": "1",
+      "figure_page": 2,
+      "figure_crop": [
+        52,
+        53,
+        562,
+        280
+      ],
+      "figure_caption": "统一表格观察、代码动作空间与多轮执行反馈框架。",
+      "evidence": [
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/view/40415",
+          "location": "Publication metadata",
+          "note": "正式发布日期 2026-03-14。"
+        },
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/download/40415/44376",
+          "location": "RL Training Paradigm; Table 1; Training details; Figure 1",
+          "note": "GRPO、0.1 格式 + 0.9 答案奖励、六个 RL 数据源；不使用 SFT。"
+        }
+      ],
+      "caveats": [
+        "MultiModalQA 只保留不需要图像的部分，模型输入为文本/DataFrame，因此归入文本表格理解。",
+        "未找到可核实的作者代码仓库，不猜测链接。"
+      ],
+      "figure_path": "img/tarex.png",
+      "pdf_file": "tmp/pdfs/tarex.pdf",
+      "pdf_sha256": "a56e021f89bab04d55c1fedbf1f7e3ec4410c1b6fcb8b08621d4ec4fa4d2cb48"
+    },
+    {
+      "slug": "mm_table_r1",
+      "title": "Multimodal Table Understanding with Difficulty-aware Reinforcement Learning",
+      "date": "2026-03-14",
+      "date_kind": "publisher_publication",
+      "venue": "AAAI 2026",
+      "paper_url": "https://ojs.aaai.org/index.php/AAAI/article/view/37042",
+      "pdf_url": "https://ojs.aaai.org/index.php/AAAI/article/view/37042/41004",
+      "code_url": null,
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "TR"
+      ],
+      "algorithm": "Two-stage difficulty-aware GRPO",
+      "method_zh": "MM-Table-R1 先以 GRPO 学习 HTML 表格重建，以单元格内容和 rowspan/colspan 的面积加权正确率奖励感知；再用答案和格式奖励训练推理。课程难度结合合并单元格比例、单元格数与模型失败率。",
+      "sft_data": "主方法不含独立 SFT；表格重建 Stage 1 也采用 RL。SFT 仅作为消融方案。",
+      "rl_data": "TabMWP、WTQ、HiTab、TAT-QA、FeTaQA、TabFact、InfoTabs、ToTTo，统一图像+HTML+QA；FeTaQA 经 DeepSeek-V3 拆分 QA。论文未公布各阶段来源样本数量。",
+      "eval_data": "TabMWP、WTQ、HiTab、TAT-QA、FeTaQA、TabFact、InfoTabs；ToTTo 重建；held-out TableVQA-Bench。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_caption": "Task curriculum from reconstruction to reasoning and sample difficulty curriculum.",
+      "figure_crop": [
+        54,
+        53,
+        546,
+        351
+      ],
+      "figure_path": "img/mm_table_r1.png",
+      "evidence": [
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/view/37042",
+          "location": "Published and bibliographic metadata",
+          "note": "Publisher publication date 14 March 2026; AAAI 40(1), 755–763."
+        },
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/view/37042/41004",
+          "location": "Section 3, PDF pages 4–5",
+          "note": "Both stages use GRPO; area-weighted reconstruction reward and difficulty-based curriculum."
+        },
+        {
+          "url": "https://ojs.aaai.org/index.php/AAAI/article/view/37042/41004",
+          "location": "Data Construction page 5; Evaluation Benchmarks page 6; Figure 2 page 4",
+          "note": "Eight training sources; ToTTo used for reconstruction rather than table-to-text generation."
+        }
+      ],
+      "caveats": [
+        "日期为出版社公布日期，未找到可确认更早日期的预印本。",
+        "ToTTo 在本论文评测的是 TR/重建（Rtr），不能标为 T2T。",
+        "未发现经作者确认的官方代码链接。"
+      ],
+      "pdf_sha256": "f0198d886a2af19786a2ab2f75b1271656acb6e174f73a6de2c0b58fdfface33",
+      "pdf_file": "tmp/pdfs/mm_table_r1.pdf"
+    },
+    {
+      "slug": "operation-r1",
+      "title": "Replacing Multi-Step Assembly of Data Preparation Pipelines with One-Step LLM Pipeline Generation for Table QA",
+      "aliases": [
+        "Operation-R1"
+      ],
+      "date": "2026-02-26",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2602.22721",
+      "pdf_url": "https://arxiv.org/pdf/2602.22721v2",
+      "pdf_version": "arXiv v2, 2026-04-01",
+      "code_url": "https://github.com/ZJU-DAILY/Operation-R1",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "ORPO (Operation-wise Group Relative Policy Optimization)",
+      "method_zh": "一次生成 select/filter/sort/group/add-column 操作流水线，ORPO 用答案信息保留率、行列压缩和长度奖励训练预处理策略，并按组内奖励质量与方差重采样。推理时合并候选操作树、逐步回滚，交给下游模型作答。",
+      "sft_data": "未报告额外 SFT；初始化 Qwen3 模型后用 LoRA 做 RL。",
+      "rl_data": "主实验：WikiTQ 过滤后 5,403 条 cell-focused 样本，按 19:1 划分训练/验证。额外数据源实验：TabFact 5,000 条，LLM 标注终端推理所需单元格并做难度过滤。",
+      "eval_data": "WikiTQ 测试集；TabFact 域外主评测；FeTaQA、TableBench 为扩展评测。",
+      "figure_number": "2",
+      "figure_page": 5,
+      "figure_crop": [
+        60,
+        78,
+        555,
+        228
+      ],
+      "figure_caption": "ORPO 离线训练与候选合并/回滚的在线表格预处理。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2602.22721",
+          "location": "Submission history",
+          "note": "首次公开 2026-02-26；使用 v2。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2602.22721v2",
+          "location": "Sections 3.2, 4.1, 4.6.2; Appendix A.2; Figure 2",
+          "note": "Operation-wise GRPO 更新；5,403 个主 RL 样本和 19:1 划分，另有 TabFact 5,000 条数据源实验。"
+        },
+        {
+          "url": "https://github.com/ZJU-DAILY/Operation-R1",
+          "location": "README / src/orm.py",
+          "note": "作者公开 ORPO 奖励插件与训练入口。"
+        }
+      ],
+      "caveats": [
+        "ORPO 在这里不是 Odds Ratio Preference Optimization。",
+        "PDF 中 PVLDB 模板年份/卷期为占位内容，未据此认定 VLDB 正式发表。",
+        "明确区分 WikiTQ 主训练与另做的 TabFact 数据源实验。"
+      ],
+      "pdf_pages": 15,
+      "pdf_sha256": "0ca7435607cf7fd1fc110b4ddfbb94b6c7b083af7c040bacc2899794004fefe5",
+      "figure_path": "img/operation-r1.png",
+      "figure_source_url": "https://arxiv.org/pdf/2602.22721v2",
+      "pdf_file": "tmp/pdfs/operation-r1.pdf"
+    },
+    {
+      "slug": "re-tab",
+      "title": "Enhancing Table Reasoning with Deterministic Table-State Rewards",
+      "date": "2026-01-30",
+      "venue": "arXiv (v2 2026-05-15)",
+      "paper_url": "https://arxiv.org/abs/2601.22530",
+      "pdf_url": "https://arxiv.org/pdf/2601.22530v2",
+      "code_url": "https://github.com/ThomasK1018/RE_Tab",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "GRPO proof-of-concept (main RE-Tab framework is training-free)",
+      "method_zh": "将操作后的中间表序列化为 header-is-value 文本，以查询与状态的最长公共子序列除以状态长度构成 TabROUGE 奖励。主框架用它指导推理和轨迹选择；v2 另用该确定性奖励对 Qwen3-8B 进行 GRPO 后训练。",
+      "sft_data": "该 GRPO 实验未报告额外 SFT 阶段。",
+      "rl_data": "WikiTQ：200 条；MMQA：92 条；MMTU：92 条。WikiTQ/MMQA 训练 300 steps，MMTU 因 OOM 训练 150 steps（Appendix G.3）。",
+      "eval_data": "GRPO：WikiTQ、MMQA、MMTU held-out subsets；主 training-free 实验另外含 TableBench、TabFact。",
+      "figure_number": "1",
+      "figure_page": 2,
+      "figure_caption": "RE-Tab state feedback and test-time trajectory search (panel c); this overview depicts the training-free reward mechanism, not a separate GRPO pipeline.",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2601.22530",
+          "location": "Submission history",
+          "note": "First submitted 30 January 2026; latest version 15 May 2026."
+        },
+        {
+          "url": "https://arxiv.org/html/2601.22530v2#S4.SS3",
+          "location": "Section 4.3 and Table 4",
+          "note": "Confirms policy-level GRPO post-training; cannot exclude it solely because main framework is training-free."
+        },
+        {
+          "url": "https://arxiv.org/html/2601.22530v2#A7.SS3",
+          "location": "Appendix G.3: Datasets and steps",
+          "note": "Exact actual training subset counts and steps, plus GRPO implementation details."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2601.22530v2",
+          "location": "Figure 1, PDF page 2",
+          "note": "Original diagram explaining the state reward underlying the RL experiment."
+        }
+      ],
+      "caveats": [
+        "仅以 v2 的 GRPO proof-of-concept 纳入；主方法及大多数结果均为 training-free，不能写成整篇都用 RL 训练。",
+        "MMQA/MMTU 的数据集名称不改变 Qwen3-8B 的文本表状态输入分类。",
+        "TabFact 在主推理实验出现，但不在该论文的 GRPO 训练数据清单中。",
+        "公开仓库主要展示推理代理；论文中的 GRPO 配置以 Appendix G.3 为准。"
+      ],
+      "figure_crop": [
+        118,
+        72,
+        478,
+        331
+      ],
+      "figure_path": "img/re-tab.png",
+      "pdf_sha256": "647ae688f1894cfa06b60ff9a2a5dcd0e85c8de7c9b478ab5dc0c79d644da80c",
+      "pdf_file": "tmp/pdfs/re-tab.pdf",
+      "scope_note": "仅纳入 v2 的 GRPO 实验；主框架为 training-free。"
+    },
+    {
+      "slug": "coretab",
+      "title": "CoReTab: Improving Multimodal Table Understanding with Code-driven Reasoning",
+      "date": "2026-01-27",
+      "venue": "EACL 2026 Long",
+      "paper_url": "https://aclanthology.org/2026.eacl-long.306/",
+      "pdf_url": "https://aclanthology.org/2026.eacl-long.306.pdf",
+      "code_url": null,
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "TSU"
+      ],
+      "algorithm": "SFT + GRPO with separate LoRA adapters",
+      "method_zh": "将自然语言推理与可执行 Python 结合，先做表格识别和代码轨迹 SFT，再用答案正确性与格式奖励做 GRPO；三阶段分别更新 LoRA。推理时优先返回代码执行结果。",
+      "sft_data": "MMTab-pre 表格识别 150K；CoReTab 115K：WTQ 9.5K、HiTab 7.5K、TabMWP 30K、TAT-QA 6K、TabFact 22K、InfoTabs 15K，加五种结构任务各 5K。轨迹通过代码执行核验。",
+      "rl_data": "CoReTab 语料；原文未单列 RL 子集数量。GRPO 每题采样 4 条，奖励为二元答案正确性＋二元格式。",
+      "eval_data": "MMTab：TabMWP、WTQ、HiTab、TAT-QA、AIT-QA；TabFact、InfoTabs、PubHealthTab；表格尺寸、单元格提取／定位、合并单元格、行列提取及域外结构任务。",
+      "figure_number": "3",
+      "figure_page": 5,
+      "figure_caption": "三阶段 LoRA 训练：表格识别、CoReTab 指令微调与 GRPO 优化。",
+      "figure_crop": [
+        304,
+        68,
+        532,
+        230
+      ],
+      "figure_path": "img/coretab.png",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2601.19193",
+          "location": "Submission history",
+          "note": "首次公开 2026-01-27。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.eacl-long.306/",
+          "location": "Publication metadata",
+          "note": "EACL 2026 正式发表。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.eacl-long.306.pdf",
+          "location": "Table 1; Sections 4.1, 5.1–5.2; Appendix B, Equations 2–4",
+          "note": "训练数据来源；实际 GRPO 更新；二元答案与格式奖励；独立 LoRA 及 4 rollouts。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.eacl-long.306.pdf",
+          "location": "Figure 3, PDF page 5; Section 5.4 ablation",
+          "note": "原始训练流程图；RL 阶段虽然称为 optional，但实验实际执行。"
+        }
+      ],
+      "caveats": [
+        "RL 阶段是在两阶段 SFT 之上追加的可选训练，论文包含移除 RL 的消融。",
+        "方法以代码执行核验数据和推理输出；RL 奖励公式只声明答案与格式，不虚构额外代码执行奖励。",
+        "未发现可核实的作者代码链接。"
+      ],
+      "pdf_sha256": "48ccf6cfb05feaba27cffb7d1455d0a1060a8af3dbc1210812506afb373f98dc",
+      "pdf_file": "tmp/pdfs/coretab.pdf"
+    },
+    {
+      "slug": "reasontabqa",
+      "title": "ReasonTabQA: A Comprehensive Benchmark for Table Question Answering from Real World Industrial Scenarios",
+      "date": "2026-01-12",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2601.07280",
+      "pdf_url": "https://arxiv.org/pdf/2601.07280v1",
+      "code_url": null,
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "TabCodeRL / DAPO",
+      "method_zh": "用双语工业表格的 thinking 或 no-thinking 轨迹做冷启动，再用 DAPO 优化 Python 推理。奖励组合代码提取、执行与答案的分段分数、表路径选择，以及组内代码语义相似度，给复杂多表推理提供更细的反馈。",
+      "sft_data": "ReasonTabQA：总体 1,932 个标注实例，按 8:2 划分训练/测试；训练部分的一半用于 SFT，按模型选择 thinking 或 no-thinking 轨迹。",
+      "rl_data": "ReasonTabQA 训练部分的另一半，使用金标答案计算 TabCodeRL 奖励；原文未提供取整后的各子集准确样本数。",
+      "eval_data": "ReasonTabQA 测试集；WikiTQ、AIT-QA、MiMoTable、HiTab 为额外评测。",
+      "figure_number": "4",
+      "figure_page": 6,
+      "figure_crop": [
+        69,
+        71,
+        528,
+        252
+      ],
+      "figure_caption": "TabCodeRL 的分段奖励与组内代码相似度优化流程。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2601.07280",
+          "location": "Submission history",
+          "note": "首次公开 2026-01-12。"
+        },
+        {
+          "url": "https://arxiv.org/html/2601.07280v1#S4",
+          "location": "Sections 4.1–4.3; Figure 4",
+          "note": "DAPO 更新和表感知可验证奖励。"
+        },
+        {
+          "url": "https://arxiv.org/html/2601.07280v1#S5.SS1",
+          "location": "Section 5.1; Appendix A",
+          "note": "8:2 训练测试划分，训练部分均分 SFT 与 RL。"
+        }
+      ],
+      "caveats": [
+        "纳入的是基准论文中的实际 TabCodeRL 训练实验。",
+        "工业表格作为结构化文件输入；不是表格截图上的视觉 TQA。",
+        "尚未核实公开作者代码链接。"
+      ],
+      "figure_path": "img/reasontabqa.png",
+      "pdf_file": "tmp/pdfs/reasontabqa.pdf",
+      "pdf_sha256": "b6bf41148733b93ae7c5421d483c281e38a2ad0777e0f4e86da4c31c696f7c5f"
+    },
+    {
+      "slug": "star",
+      "title": "STaR: Towards Effective and Stable Table Reasoning via Slow-Thinking Large Language Models",
+      "aliases": [
+        "STaR: Towards Cognitive Table Reasoning via Slow-Thinking Large Language Models"
+      ],
+      "date": "2025-11-14",
+      "venue": "The Web Conference 2026",
+      "paper_url": "https://arxiv.org/abs/2511.11233",
+      "pdf_url": "https://arxiv.org/pdf/2511.11233v2",
+      "code_url": "https://github.com/ustc-table-mining/STaR",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "Difficulty-aware enhanced GRPO (DAPO variant)",
+      "method_zh": "自验证筛选慢思考轨迹做 SFT，随后用带非对称裁剪的 GRPO 先训练容易样本，再动态筛选困难样本。格式、部分重合与完整答案奖励缓解稀疏反馈；推理时融合 token 置信度和答案一致性选择轨迹。",
+      "sft_data": "WikiTableQuestions、HiTab、FinQA 的训练划分，经自验证的慢思考轨迹。",
+      "rl_data": "相同三个数据集的训练划分，依据 pass@k 分为 easy/hard，并对 hard 子集动态筛选。",
+      "eval_data": "WTQ、HiTab、FinQA 测试集；TabMWP、TabFact 为域外评测，仅推理。",
+      "figure_number": "1",
+      "figure_page": 3,
+      "figure_crop": [
+        52,
+        80,
+        560,
+        351
+      ],
+      "figure_caption": "自验证 SFT、难度感知 RL 与不确定性轨迹选择。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2511.11233",
+          "location": "Submission history",
+          "note": "首次公开 2025-11-14；采用更名后的 v2（2026-01-26）。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2511.11233v2",
+          "location": "Sections 3.2–3.3, 4.1; Appendix B.1; Figure 1",
+          "note": "增强 GRPO 和训练数据难度划分；最新版本明确测试集只评测。"
+        },
+        {
+          "url": "https://doi.org/10.1145/3774904.3792372",
+          "location": "Publication metadata",
+          "note": "The Web Conference 2026 正式发表与当前标题。"
+        }
+      ],
+      "caveats": [
+        "TabFact 只用于域外评测，未用于本文 RL 训练。",
+        "旧 v1 的附录对测试集用途措辞不同；本条按 v2 的训练划分与说明记录。"
+      ],
+      "figure_path": "img/star.png",
+      "pdf_file": "tmp/pdfs/star.pdf",
+      "pdf_sha256": "419b22eb9fc7928d14af13356f514874df48ee5749ba5c52b037bae02a1324b1"
+    },
+    {
+      "slug": "mixture-of-minds",
+      "title": "Mixture-of-Minds: Multi-Agent Reinforcement Learning for Table Understanding",
+      "date": "2025-10-23",
+      "venue": "ACL 2026 Main",
+      "paper_url": "https://aclanthology.org/2026.acl-long.112/",
+      "pdf_url": "https://aclanthology.org/2026.acl-long.112.pdf",
+      "code_url": "https://github.com/Tonyzhou98/mixture-of-minds",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "Data Analysis"
+      ],
+      "algorithm": "Sequential multi-agent GRPO",
+      "method_zh": "把表格推理拆成规划、代码执行、作答三个代理。MCTS 式分支采样从答对的路径回溯出伪金标计划与代码，再依次用 GRPO 优化三个代理；奖励分别衡量计划相似度、代码执行与操作质量、最终答案正确性。",
+      "sft_data": "本文代理训练流程未单列额外 SFT 阶段；成功 rollout 生成的伪金标用于 GRPO 奖励。",
+      "rl_data": "TableInstruct：4,897 个去重 QA，经答案一致性与人工核对清洗；MCTS 式 rollout 生成计划、代码、答案训练实例。",
+      "eval_data": "TableBench 的 Fact Checking/Numerical Reasoning/Data Analysis（836 题）；FinQA 为域外评测。",
+      "figure_number": "2",
+      "figure_page": 5,
+      "figure_crop": [
+        69,
+        65,
+        528,
+        198
+      ],
+      "figure_caption": "MCTS 式规划、代码和答案分支，以及成功路径的伪金标回溯。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2510.20176",
+          "location": "Submission history",
+          "note": "首次公开 2025-10-23。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.acl-long.112.pdf",
+          "location": "Sections 4.1–4.2, 5.1; Appendix C; Figure 2",
+          "note": "顺序 GRPO、各代理奖励与 TableInstruct 数据来源；采用 ACL 正式版本。"
+        }
+      ],
+      "caveats": [
+        "MCTS 用于生成训练信号；策略更新使用 GRPO。",
+        "评测集不列作 RL 数据；TableInstruct 原始来源可能含同名基准，需按原文划分理解域外结论。"
+      ],
+      "figure_path": "img/mixture-of-minds.png",
+      "pdf_file": "tmp/pdfs/mixture-of-minds.pdf",
+      "pdf_sha256": "685c8765000e46a23fe012d3008afe816554f78b06c10ec7c32413377b683cdd"
+    },
+    {
+      "slug": "tattoo",
+      "title": "TaTToo: Tool-Grounded Thinking PRM for Test-Time Scaling in Tabular Reasoning",
+      "date": "2025-10-07",
+      "venue": "ICLR 2026",
+      "paper_url": "https://openreview.net/forum?id=zc1ezBrr5m",
+      "pdf_url": "https://cdn.amazon.science/fb/17/2cafd7404010bf50b4015bba4654/camera-ready-iclr-2026-tableprm.pdf",
+      "pdf_version": "ICLR 2026 camera-ready, 28 pages",
+      "code_url": null,
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "Data Analysis"
+      ],
+      "model_role": "RL-trained verifier / PRM",
+      "algorithm": "Modified GRPO with dense step-level reward shaping",
+      "method_zh": "训练可生成验证理由、调用 Python/SQL 与表格检索工具的 PRM。SFT 学会区域前缀与工具验证，再用 GRPO 优化标签匹配、置信度校准及工具证据支持；推理时给回答策略的候选轨迹打分，支持 Best-of-N 和树搜索。",
+      "sft_data": "TableInstruct、HybridQA、ToTTo、WikiTQ 的专家推理轨迹，经 LLM/人工核验和工具调用合成约 60K 步级验证实例；Table 8 的 SFT 阶段使用 50K。",
+      "rl_data": "上述合成的步级验证语料中 10K（Table 8），用于 PRM 的 GRPO；训练对象是验证器。",
+      "eval_data": "TableBench Numerical Reasoning / Fact Checking / Data Analysis；WikiTQ；MMQA 多表理解基准（此处不是 MultiModalQA）。",
+      "figure_number": "1",
+      "figure_page": 1,
+      "figure_crop": [
+        108,
+        460,
+        504,
+        655
+      ],
+      "figure_caption": "工具辅助数据合成与 SFT→RL 双阶段 PRM 训练。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2510.06217",
+          "location": "Submission history",
+          "note": "首次公开 2025-10-07。"
+        },
+        {
+          "url": "https://openreview.net/forum?id=zc1ezBrr5m",
+          "location": "Publication metadata",
+          "note": "ICLR 2026 正式发表。"
+        },
+        {
+          "url": "https://cdn.amazon.science/fb/17/2cafd7404010bf50b4015bba4654/camera-ready-iclr-2026-tableprm.pdf",
+          "location": "Sections 4.2–4.3, 5; Table 8, PDF p.25; Figure 1",
+          "note": "实际 GRPO 更新验证器；四个原始语料源、50K SFT / 10K RL，以及评测基准。"
+        }
+      ],
+      "caveats": [
+        "纳入 RL 训练的表格验证器；下游回答策略在本方法中主要通过测试时搜索提升，而非本工作对它做 RL。",
+        "ToTTo 是验证语料来源，不据此标成本文 T2T 评测。",
+        "尚未核实公开作者代码仓库。"
+      ],
+      "pdf_pages": 28,
+      "pdf_sha256": "078fbcc8f27c5d6969c1d37ef9fb84b518bd2cb6aa455a8a42ac2ae690e1840b",
+      "figure_path": "img/tattoo.png",
+      "figure_source_url": "https://cdn.amazon.science/fb/17/2cafd7404010bf50b4015bba4654/camera-ready-iclr-2026-tableprm.pdf",
+      "pdf_file": "tmp/pdfs/tattoo-iclr.pdf",
+      "scope_note": "RL 训练的是过程验证器/PRM。"
+    },
+    {
+      "slug": "visual_table_r1",
+      "title": "Can GRPO Boost Complex Multimodal Table Understanding?",
+      "date": "2025-09-21",
+      "venue": "EMNLP 2025",
+      "paper_url": "https://aclanthology.org/2025.emnlp-main.637/",
+      "pdf_url": "https://aclanthology.org/2025.emnlp-main.637.pdf",
+      "code_url": null,
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "TR"
+      ],
+      "algorithm": "SFT warm-up + PA-GRPO + HC-GRPO",
+      "method_zh": "Table-R1 三阶段训练：SFT 热身提升感知与推理起点，PA-GRPO 用 TEDS 连续奖励优化图像到 HTML/Markdown，HC-GRPO 在给定部分推理提示后补全剩余步骤，以最终答案正确性与格式奖励缓解稀疏反馈。",
+      "sft_data": "MMTab 中 WTQ、HiTab、TabMWP、TabFact 各抽 8K QA；感知目标为结构化表格，推理目标由 GPT-4o 扩写并拆成 hint-completion。",
+      "rl_data": "相同四个 held-in 来源；PA-GRPO 用图像重建数据 Dp，HC-GRPO 用 hint-completion 推理数据 Dr。",
+      "eval_data": "held-in WTQ、HiTab、TabMWP、TabFact；held-out TAT-QA、InfoTabs。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_caption": "Warm-up, TEDS-based perception alignment and hinted reasoning completion.",
+      "figure_crop": [
+        70,
+        65,
+        530,
+        357
+      ],
+      "figure_path": "img/visual_table_r1.png",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2509.16889",
+          "location": "Submission history",
+          "note": "First submitted 21 September 2025."
+        },
+        {
+          "url": "https://aclanthology.org/2025.emnlp-main.637.pdf",
+          "location": "Section 4.2, pages 4–5; Table 2, page 6",
+          "note": "SFT and two actual GRPO stages; four training datasets distinct from two held-out datasets."
+        },
+        {
+          "url": "https://aclanthology.org/2025.emnlp-main.637.pdf",
+          "location": "Section 5.2, pages 6–7; Figure 2, page 4; Limitations page 10",
+          "note": "T2T explicitly excluded; HC-GRPO reward remains binary answer correctness plus format."
+        }
+      ],
+      "caveats": [
+        "HC-GRPO 的最终奖励仍是答案/格式二值信号，并非逐步正确性标签的过程奖励模型。",
+        "TAT-QA 与 InfoTabs 是 held-out，不能列为训练集。",
+        "同名 Table-R1 的文本/区域强化学习论文需单独去重；未发现官方代码链接。"
+      ],
+      "pdf_sha256": "d2830ae8b687a11ec226c0036a03a8cacb0832134beb82d01ea8d38b52e12f7c",
+      "pdf_file": "tmp/pdfs/visual_table_r1.pdf"
+    },
+    {
+      "slug": "m3tqa",
+      "title": "M3TQA: Massively Multilingual Multitask Table Question Answering",
+      "date": "2025-08-22",
+      "venue": "Findings of ACL 2026",
+      "paper_url": "https://aclanthology.org/2026.findings-acl.1134/",
+      "pdf_url": "https://aclanthology.org/2026.findings-acl.1134.pdf",
+      "pdf_version": "Findings ACL 2026 published version, 25 pages",
+      "code_url": "https://github.com/sdxvv/m3TQA",
+      "code_status": "author repository placeholder",
+      "data_url": "https://huggingface.co/datasets/sdxvv/m3TQA-Instruct",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "SFT followed by GRPO",
+      "method_zh": "将中英真实表格经翻译与验证扩展到 97 种语言，合成四类 QA。先用含或不含思考轨迹的指令做 SFT，再从最佳 SFT checkpoint 做 GRPO；奖励按任务使用数值/单元格 Jaccard、事实验证 F1 或开放答案 ROUGE-L。",
+      "sft_data": "M3TQA-INSTRUCT：97 种语言的 39,982 条自动生成 QA（ACL 正式版）；分别测试 thinking 与 non-thinking 训练。",
+      "rl_data": "同一 M3TQA-INSTRUCT，经 SFT 后继续 GRPO；原文未报告另一个独立 RL 语料或准确子集数量。",
+      "eval_data": "M3TQA-BENCH：6,606 条人工核验 QA，包含 2,916 条 LLM 生成与 3,690 条人工构造测试题；与 INSTRUCT 训练集区分。",
+      "figure_number": "2",
+      "figure_page": 3,
+      "figure_crop": [
+        130,
+        78,
+        456,
+        257
+      ],
+      "figure_caption": "97 语言表格翻译、验证与多任务数据构建流程（数据方法图）。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2508.16265",
+          "location": "Submission history",
+          "note": "首次公开 2025-08-22。"
+        },
+        {
+          "url": "https://aclanthology.org/2026.findings-acl.1134.pdf",
+          "location": "Sections 2.3, 3.1–3.3; Table 2; Figure 2",
+          "note": "正式版 39,982 个训练 QA / 6,606 个测试 QA，明确从 SFT checkpoint 做 GRPO。"
+        },
+        {
+          "url": "https://github.com/sdxvv/m3TQA",
+          "location": "Repository content",
+          "note": "作者仓库可访问，但核验时仅占位 README，未发布训练代码。"
+        }
+      ],
+      "caveats": [
+        "采用正式 ACL 版本统计；不混用旧 arXiv 的 39,077/7,210 数字。",
+        "论文未提供独立 RL 流程图，所提取 Figure 2 为整体数据构建方法图；RL 方法见 Section 3.3。",
+        "官方仓库目前是占位页，应显示代码未完整发布。"
+      ],
+      "pdf_pages": 25,
+      "pdf_sha256": "ca9d6675f44d9f44978694aa1e800905ccbd866c2122a093f850b525fbc44416",
+      "figure_path": "img/m3tqa.png",
+      "figure_source_url": "https://aclanthology.org/2026.findings-acl.1134.pdf",
+      "pdf_file": "tmp/pdfs/m3tqa-acl.pdf",
+      "scope_note": "图为训练数据构造流程，论文未单列 RL 架构图。"
+    },
+    {
+      "slug": "opentable-r1",
+      "title": "OpenTable-R1: A Reinforcement Learning Augmented Tool Agent for Open-Domain Table Question Answering",
+      "date": "2025-07-02",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2507.03018",
+      "pdf_url": "https://arxiv.org/pdf/2507.03018v1",
+      "code_url": "https://github.com/TabibitoQZP/OpenTableR1",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "Cold-start SFT + Async GRPO",
+      "method_zh": "训练 Qwen3-4B 在多轮对话中调用 BM25+ 表检索和 SQLite SQL 执行工具。先以简单问题的正确轨迹冷启动，再在困难问题上用 Async GRPO 优化策略；LoRA 与 rollout buffer 重叠采样和参数更新以缓解长轨迹带来的等待。",
+      "sft_data": "Open-WikiTable train 的 31,959 条简单样本；由 Qwen3-32B 生成答案并按答案 EM 筛选；full-parameter SFT 2 epochs。",
+      "rl_data": "Open-WikiTable train 的其余 21,860 条困难样本；Async GRPO + LoRA rank 12，1,504 update steps。",
+      "eval_data": "Open-WikiTable test 的 1,024 条随机子集（全量 test 6,602）。",
+      "figure_number": "1",
+      "figure_page": 4,
+      "figure_caption": "Plain GRPO versus Async GRPO time series: rollout engines, training batches, and rollout buffer.",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2507.03018",
+          "location": "Metadata and abstract",
+          "note": "First submitted 2 July 2025; links author code."
+        },
+        {
+          "url": "https://arxiv.org/html/2507.03018v1#S2.SS2",
+          "location": "Section 2.2",
+          "note": "Clipped, importance-weighted GRPO objective, LoRA adapters and asynchronous rollout buffer."
+        },
+        {
+          "url": "https://arxiv.org/html/2507.03018v1#S3.SS2",
+          "location": "Section 3.2, Table 4",
+          "note": "31,959 SFT and 21,860 RL training examples are separate Open-WikiTable subsets."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2507.03018v1",
+          "location": "Figure 1, PDF page 4",
+          "note": "Original Async GRPO diagram, the only numbered method figure."
+        }
+      ],
+      "caveats": [
+        "基准为 Open-WikiTable，不能混写成 WikiTableQuestions 或 OTT-QA。",
+        "论文提及 QA reward 与工具调用成本，但没有完整给出可复核的各奖励项公式/权重；不补造具体 reward 数值。",
+        "代码 README 的约 88% 与论文 86.2% 不一致；以论文测试子集结果为准。"
+      ],
+      "figure_crop": [
+        82,
+        531,
+        540,
+        653
+      ],
+      "figure_path": "img/opentable-r1.png",
+      "pdf_sha256": "a2a2026c278519b85f23ee1eb041e732ddc943f1af8f031fb67ae8887ebedb97",
+      "pdf_file": "tmp/pdfs/opentable-r1.pdf"
+    },
+    {
+      "slug": "mtabvqa",
+      "title": "MTabVQA: Evaluating Multi-Tabular Reasoning of Language Models in Visual Space",
+      "date": "2025-06-13",
+      "venue": "Findings of EMNLP 2025",
+      "paper_url": "https://aclanthology.org/2025.findings-emnlp.1083/",
+      "pdf_url": "https://aclanthology.org/2025.findings-emnlp.1083.pdf",
+      "code_url": "https://github.com/anshulsc/MTabVQA-EMNLP",
+      "modality": "multimodal",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "GRPO experimental branch (EasyR1)",
+      "method_zh": "在多张表格图像之间执行多跳 QA；论文附加 GRPO 实验训练 Qwen2.5-VL-3B，复合奖励包含 EM/F1 答案正确性、think/answer 标签结构和 JSON 有效性，并与独立 SFT 分支比较。",
+      "sft_data": "独立 SFT 比较分支：同一 2,395 条 Spider 来源子集；主 TableVision 模型另用完整 MTabVQA-Instruct 进行 SFT。",
+      "rl_data": "MTabVQA-Instruct 的 Spider 来源 2,395 QA 子集；Qwen2.5-VL-3B 用 EasyR1 训练 270 steps。",
+      "eval_data": "MTabVQA-Eval，3,745 QA；Spider、Query、ATIS、MiMo 子集。",
+      "figure_number": "2",
+      "figure_page": 5,
+      "figure_caption": "Relational sampling, visual QA generation and dataset verification pipeline.",
+      "figure_crop": [
+        68,
+        73,
+        530,
+        354
+      ],
+      "figure_path": "img/mtabvqa.png",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2506.11684",
+          "location": "Submission history",
+          "note": "First submitted 13 June 2025."
+        },
+        {
+          "url": "https://aclanthology.org/2025.findings-emnlp.1083.pdf",
+          "location": "Section 4.2, pages 7–8; Appendix G, page 22",
+          "note": "Actual 2,395-sample GRPO experiment; accepted version specifies EM/F1, structural and JSON reward components."
+        },
+        {
+          "url": "https://aclanthology.org/2025.findings-emnlp.1083.pdf",
+          "location": "Figure 2, page 5",
+          "note": "Original method diagram is dataset construction, not an RL architecture figure."
+        },
+        {
+          "url": "https://github.com/anshulsc/MTabVQA-EMNLP",
+          "location": "Repository README/about",
+          "note": "Author repository for data generation and evaluation; standalone GRPO implementation availability not established."
+        }
+      ],
+      "caveats": [
+        "收录的是论文中的 GRPO 实验分支；主 TableVision 是 SFT，不能描述为 GRPO 训练模型。",
+        "论文未提供专门 RL 方法架构图，使用 Fig.2 数据构建流程图并明确标注。",
+        "该实验中 GRPO 优于 CoT，但低于相同数据的 SFT。"
+      ],
+      "pdf_sha256": "aec8515601695575a16a895102974656914de364c940551f4032dc7d0b89fc3a",
+      "pdf_file": "tmp/pdfs/mtabvqa.pdf",
+      "scope_note": "收录 GRPO 实验分支；主 TableVision 方法为 SFT。"
+    },
+    {
+      "slug": "table-r1-program",
+      "title": "Table-r1: Self-supervised and Reinforcement Learning for Program-based Table Reasoning in Small Language Models",
+      "date": "2025-06-06",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2506.06137",
+      "pdf_url": "https://arxiv.org/pdf/2506.06137v1",
+      "code_url": "https://github.com/AriKing11/Table_r1_public",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "Mix-paradigm GRPO",
+      "method_zh": "先用自生成的布局变换推断任务学习表格结构，再蒸馏代码推理冷启动。混合范式 GRPO 优先学习可执行 Python，并允许在合适问题上回退为文本推理；格式、编译和答案奖励配合退化短代码惩罚。",
+      "sft_data": "布局变换合成三元组；WikiTQ、TabFact、HiTab、AIT-QA 训练划分由 DeepSeek-v3 蒸馏，每数据集最多 5,000 条冷启动轨迹。",
+      "rl_data": "WikiTQ、TabFact、HiTab 的官方训练划分；AIT-QA 按问题随机 8:2 划分后的训练部分。",
+      "eval_data": "WikiTQ、TabFact、HiTab 官方测试划分，以及 AIT-QA 20% 测试部分。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_crop": [
+        106,
+        68,
+        507,
+        300
+      ],
+      "figure_caption": "布局变换自监督阶段与混合范式 GRPO 训练总览。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2506.06137",
+          "location": "Metadata and submission history",
+          "note": "首次公开 2025-06-06；与其他 Table-R1 同名工作不同。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2506.06137v1",
+          "location": "Sections 4.1–4.2, 5.1; Appendix C; Figure 2",
+          "note": "布局变换、冷启动、GRPO 与四个数据集划分。"
+        }
+      ],
+      "caveats": [
+        "作者仓库可访问，但内容发布完整性需单独检查。",
+        "实现截取表格前十行；AIT-QA 为问题级随机划分。"
+      ],
+      "figure_path": "img/table-r1-program.png",
+      "pdf_file": "tmp/pdfs/table-r1-program.pdf",
+      "pdf_sha256": "d2b830a141471e400941fd14c84f042e1e9136ceaf7bb476d77ea6dfcc391412"
+    },
+    {
+      "slug": "turbo",
+      "title": "Multimodal Tabular Reasoning with Privileged Structured Information",
+      "date": "2025-06-04",
+      "venue": "NeurIPS 2025",
+      "paper_url": "https://arxiv.org/abs/2506.04088",
+      "pdf_url": "https://arxiv.org/pdf/2506.04088v1",
+      "code_url": null,
+      "modality": "multimodal",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "Structure-aware trace SFT + GRPO",
+      "method_zh": "TURBO 在训练期把 Markdown 表格作为特权信息，让 DeepSeek-R1 生成并筛选结构感知推理轨迹；先蒸馏到图像模型，再以答案正确性和输出格式奖励做 GRPO。推理期仅输入表格图像。",
+      "sft_data": "TabMWP、WTQ、TAT-QA、TabFact、InfoTabs 各采 2K，10K 经拒绝采样保留约 9K 高质量轨迹。",
+      "rl_data": "同一约 9K 数据；各问题采 16 个回答，执行 GRPO。HiTab 因 Markdown 层级格式困难而未用于训练。",
+      "eval_data": "TabMWP、WTQ、HiTab、TAT-QA、TabFact、InfoTabs；MMMU 表格相关 165 题。",
+      "figure_number": "3",
+      "figure_page": 5,
+      "figure_caption": "Privileged-table trace generation followed by visual SFT and GRPO.",
+      "figure_crop": [
+        105,
+        68,
+        505,
+        308
+      ],
+      "figure_path": "img/turbo.png",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2506.04088",
+          "location": "Submission history",
+          "note": "First submitted 4 June 2025."
+        },
+        {
+          "url": "https://openreview.net/pdf?id=AuBSUgFVgq",
+          "location": "NeurIPS 2025 accepted paper",
+          "note": "Accepted conference version establishes venue."
+        },
+        {
+          "url": "https://arxiv.org/html/2506.04088v1#A1",
+          "location": "Appendix A.1–A.2; Section 4.2",
+          "note": "Five 2K source pools filtered to 9K, shared SFT/RL corpus, HiTab excluded from training."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2506.04088v1",
+          "location": "Figure 3, page 5; reward paragraph page 7",
+          "note": "Original framework diagram and format-plus-correctness GRPO reward."
+        }
+      ],
+      "caveats": [
+        "HiTab 是评测集，不是训练集；FeTaQA 被作者排除。",
+        "未发现经作者确认的官方代码链接。"
+      ],
+      "pdf_sha256": "c0659ec3b428a8c93c4889eeaaf01045b466d5e0f5128e7546754644f9f24faa",
+      "pdf_file": "tmp/pdfs/turbo.pdf"
+    },
+    {
+      "slug": "reasoning-table",
+      "title": "Reasoning-Table: Exploring Reinforcement Learning for Table Reasoning",
+      "date": "2025-06-02",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2506.01710",
+      "pdf_url": "https://arxiv.org/pdf/2506.01710v1",
+      "pdf_version": "arXiv v1",
+      "code_url": "https://github.com/MJinXiang/Reasoning-Table",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "T2T",
+        "Text-to-SQL"
+      ],
+      "algorithm": "GRPO",
+      "method_zh": "比较 RL-zero 与 Reason-SFT+RL，用最终答案、SQL 执行或文本 BLEU 阈值构造结果奖励，并加入格式奖励。系统研究教师轨迹过滤、训练样本难度、单任务与合并训练；位置证据一致性奖励作为消融实验。",
+      "sft_data": "WikiTQ、HybridQA、MultiHiertt、OTT-QA、FinQA、FeTaQA、TAT-QA、HiTab、ToTTo、TabFact、FEVEROUS 的教师推理轨迹；Table 8 保留 97,564 条，统一 SFT 为 43,201 条；ToTTo 单任务 Reason-SFT 为 1,896 条。Spider/BIRD 另有 SQL 实验。",
+      "rl_data": "单数据集 RL：上述 11 个表格语料训练划分，以及 Spider/BIRD；T2T 明确在 ToTTo 上做 RL-zero 与 Reason-SFT+RL。另报告合并 TQA 训练及难度控制；原文未给所有 RL 配置共用的单一样本总数。",
+      "eval_data": "上述数据集的评测划分；AIT-QA、TableBench 为域外评测。",
+      "figure_number": "1",
+      "figure_page": 2,
+      "figure_crop": [
+        108,
+        80,
+        504,
+        222
+      ],
+      "figure_caption": "多类表格推理任务上的 SFT 与 GRPO 比较框架。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2506.01710",
+          "location": "Submission history / Comments",
+          "note": "首次公开 2025-06-02；作者标为 Work in progress。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2506.01710v1",
+          "location": "Sections 3.1–3.4, 4.1; Tables 1–2; Appendix A.2/Table 8; Figure 1",
+          "note": "GRPO 实验及训练来源；Table 2 明确 ToTTo RL 结果，Table 8 区分单任务和统一 SFT。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2506.01710v1",
+          "location": "Sections 5.1–5.2; Tables 3–4; Appendix B.3",
+          "note": "位置奖励属于消融；AIT-QA/TableBench 为域外评测。"
+        },
+        {
+          "url": "https://github.com/MJinXiang/Reasoning-Table",
+          "location": "README / training scripts",
+          "note": "可访问的作者实现。"
+        }
+      ],
+      "caveats": [
+        "15 个评测基准不等于同一个合并 RL 训练集。",
+        "统一 SFT 中 ToTTo 和 FEVEROUS 为 0；它们仍有单数据集 RL 实验。",
+        "默认主要配置位置奖励权重为 0，不能把位置一致性写成所有主实验都使用。"
+      ],
+      "pdf_pages": 29,
+      "pdf_sha256": "9bdcdb168bb4ee15d76e95522581b132f30b655bece7c8bd168b85efa216d112",
+      "figure_path": "img/reasoning-table.png",
+      "figure_source_url": "https://arxiv.org/pdf/2506.01710v1",
+      "pdf_file": "tmp/pdfs/reasoning-table.pdf"
+    },
+    {
+      "slug": "table-r1-scaling",
+      "title": "Table-R1: Inference-Time Scaling for Table Reasoning Tasks",
+      "aliases": [
+        "Table-R1: Inference-Time Scaling for Table Reasoning"
+      ],
+      "date": "2025-05-29",
+      "venue": "EMNLP 2025",
+      "paper_url": "https://aclanthology.org/2025.emnlp-main.1040/",
+      "pdf_url": "https://aclanthology.org/2025.emnlp-main.1040.pdf",
+      "pdf_version": "EMNLP 2025 published version, 20 pages",
+      "code_url": "https://github.com/Table-R1/Table-R1",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "T2T"
+      ],
+      "algorithm": "GRPO with DAPO token-level loss and asymmetric clipping; no KL penalty",
+      "method_zh": "Table-R1-Zero 直接从指令模型做 RL：采用 DAPO 的 token 级损失与非对称裁剪，不加 KL 惩罚。短答案与事实验证用正确性奖励，长答案用 BLEU/ROUGE-L，另加结构化输出奖励；多次采样扩展推理时计算。",
+      "sft_data": "独立 Table-R1-SFT 对照：WTQ、HiTab、TabFact、FeTaQA 经 DeepSeek-R1 生成并验证的 33,601 条长思维链；不是 Table-R1-Zero 的冷启动阶段。",
+      "rl_data": "四个训练划分过滤后共 48,563 条：WTQ 13,706；HiTab 6,793；TabFact 20,740；FeTaQA 7,324。",
+      "eval_data": "域内：WTQ、HiTab、TabFact、FeTaQA；域外：ToTTo、QTSumm、RotoWire、InfoTabs、PubHealthTab、FEVEROUS、TabMCQ、TabMWP、FinQA。",
+      "figure_number": "2",
+      "figure_page": 2,
+      "figure_crop": [
+        307,
+        68,
+        522,
+        280
+      ],
+      "figure_caption": "独立 SFT 与 RLVR 两条训练路线及推理时扩展。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2505.23621",
+          "location": "Submission history",
+          "note": "首次公开 2025-05-29。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.emnlp-main.1040/",
+          "location": "Publication metadata",
+          "note": "EMNLP 2025 正式标题带 Tasks。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.emnlp-main.1040.pdf",
+          "location": "Sections 3.1–3.3, 4.1–4.2; Table 1; Figure 2",
+          "note": "训练集样本数、GRPO/DAPO 目标与各任务奖励；SFT/RL 两种独立模型。"
+        },
+        {
+          "url": "https://github.com/Table-R1/Table-R1",
+          "location": "README / training scripts",
+          "note": "官方仓库分别提供 SFT 与 RL 训练入口。"
+        }
+      ],
+      "caveats": [
+        "T2T 为 ToTTo/QTSumm/RotoWire 域外生成评测；RL 训练来源是四个 TQA/TFV 数据集。",
+        "论文训练样本数与后续 Hugging Face 发布集合大小可能不同，采用固定版本论文的数字。",
+        "ACL 元数据标题带 Tasks，而正式 PDF 标题不带；本条按元数据引用并保留 PDF 标题为别名。"
+      ],
+      "pdf_pages": 20,
+      "pdf_sha256": "ac314de535c21e9f31e0016267499ec2cac6308556d14e86a9fa68f61acedf6a",
+      "figure_path": "img/table-r1-scaling.png",
+      "figure_source_url": "https://aclanthology.org/2025.emnlp-main.1040.pdf",
+      "pdf_file": "tmp/pdfs/table-r1-scaling-emnlp.pdf"
+    },
+    {
+      "slug": "formula-r1",
+      "title": "Formula-R1: Incentivizing LLM Reasoning over Complex Tables with Numerical Computation via Formula-Driven Reinforcement Learning",
+      "aliases": [
+        "Fortune: Formula-Driven Reinforcement Learning for Symbolic Table Reasoning in Language Models"
+      ],
+      "date": "2025-05-29",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2505.23667",
+      "pdf_url": "https://arxiv.org/pdf/2505.23667v3",
+      "pdf_version": "arXiv v3, 2026-03-23",
+      "code_url": "https://github.com/microsoft/Fortune",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "PPO",
+      "method_zh": "Formula Tuning 让模型先思考再生成可执行表格公式，借助公式引擎提供可验证奖励：答对 1、可执行但错误 0.2、不可执行 0，另加格式奖励。比较直接 PPO 与蒸馏冷启动；Plus 在推理时融合文本和公式答案投票。",
+      "sft_data": "五个源训练集上由 GPT-4o 生成思维链/公式，经答案或公式执行正确性拒绝筛选的冷启动数据；SFT+RL 配置使用，RL-zero 不使用。",
+      "rl_data": "合并 WikiTQ 13,753、TabFact 10,000（随机下采样）、FinQA 6,251、HiTab 7,399、MultiHiertt 7,795 条训练数据。",
+      "eval_data": "上述五个数据集测试划分；AIT-QA、TableBench 为域外评测。",
+      "figure_number": "1",
+      "figure_page": 4,
+      "figure_crop": [
+        128,
+        80,
+        484,
+        216
+      ],
+      "figure_caption": "思维链、公式生成/执行与公式驱动 RL 的总览。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2505.23667",
+          "location": "Submission history / current title",
+          "note": "首次公开 2025-05-29；旧标题 Fortune，v3 更名 Formula-R1。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2505.23667v3",
+          "location": "Section 3.2; Appendix E, pp.25–26/Table 4; Figure 1",
+          "note": "奖励三档、五数据集联合训练、实际采用 PPO（非 GRPO）及 GPT-4o SFT 筛选。"
+        },
+        {
+          "url": "https://github.com/microsoft/Fortune",
+          "location": "README",
+          "note": "作者公开的 Fortune/Formula Tuning 核心实现。"
+        }
+      ],
+      "caveats": [
+        "固定最新版本与更名信息，Fortune 不另列为重复论文。",
+        "仓库提供核心组件，完整训练需按其说明整合 verl。",
+        "论文报告按测试集 EM 选择 SFT checkpoint，应在解释实验结果时注意此设置。"
+      ],
+      "pdf_pages": 42,
+      "pdf_sha256": "750a220c78081aae0741981940f424bd23b93de14f31a9eaf48bb119bb58236b",
+      "figure_path": "img/formula-r1.png",
+      "figure_source_url": "https://arxiv.org/pdf/2505.23667v3",
+      "pdf_file": "tmp/pdfs/formula-r1.pdf"
+    },
+    {
+      "slug": "more",
+      "title": "Mixture-of-Retrieval Experts for Reasoning-Guided Multimodal Knowledge Exploitation",
+      "date": "2025-05-28",
+      "venue": "SIGIR 2026 (arXiv v2 2026-04-06)",
+      "paper_url": "https://arxiv.org/abs/2505.22095",
+      "pdf_url": "https://arxiv.org/pdf/2505.22095v2",
+      "code_url": "https://github.com/OpenBMB/MoRE",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV"
+      ],
+      "algorithm": "Step-GRPO",
+      "method_zh": "通用检索代理 MoRE 在文本、图像、结构化表格专家之间逐步路由。先生成并筛选教师轨迹，再按步骤采样，用查询与教师查询的 BGE-M3 相似度、专家选择正确性、观察/答案质量和格式奖励做 Step-GRPO；明确包含表格 QA 的 RL 训练。",
+      "sft_data": "主方法未报告独立 SFT 热启动；代码直接从 Qwen2.5-VL-Instruct 开始 Step-GRPO。教师轨迹来自相同训练集（Qwen2.5-VL-7B 生成 VQA，R1-Distill-Qwen-32B 生成 Text/Table QA）；SFT 是对照方法。",
+      "rl_data": "Open-WikiTable 500 条（表格 QA）；另含 2WikiMultihopQA 500 条、InfoSeek 1,000 条，总计 2,000 条源问题。步骤级展开后的训练记录数未明确报告。",
+      "eval_data": "Open-WikiTable 1,000；TabFact 1,000（OOD TFV）；另有 2WikiMultihopQA 1,000、InfoSeek 1,000、Dyn-VQA 715、WebQA 1,000。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_caption": "The Architecture of Stepwise GRPO Training Used by MoRE.",
+      "figure_crop": [
+        53,
+        82,
+        559,
+        386
+      ],
+      "figure_path": "img/more.png",
+      "pdf_sha256": "7471c2b9af07da8be6fe2bfabe2bb34d12511766a2c600ab46a4514638678f21",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2505.22095",
+          "location": "Submission history",
+          "note": "First submitted 28 May 2025; v2 6 April 2026 uses MoRE title. v1 was Learning to Route Queries Across Knowledge Bases for Step-wise Retrieval-Augmented Reasoning / R1-Router."
+        },
+        {
+          "url": "https://arxiv.org/html/2505.22095v2",
+          "location": "Section 3.3 Eqs. 9–14; Section 4 Table 1",
+          "note": "Actual stepwise GRPO loss and reward definitions; Open-WikiTable is explicitly part of training, TabFact only OOD evaluation."
+        },
+        {
+          "url": "https://github.com/OpenBMB/MoRE",
+          "location": "README News 2026.04.03; Training",
+          "note": "Author repository confirms SIGIR 2026 acceptance and actual Step-GRPO training implementation."
+        },
+        {
+          "url": "https://github.com/OpenBMB/MoRE/blob/main/src/answer_generation.py",
+          "location": "get_llm_response lines 89–100; origin_question_gen lines 105–128",
+          "note": "VQA takes actual image pixels; OpenWikiTQA and TabFact are text-question branches without image input."
+        },
+        {
+          "url": "https://github.com/OpenBMB/MoRE/blob/main/Easy-R1/verl/utils/rl_dataset.py",
+          "location": "lines 136–143 and 161–177",
+          "note": "Training image examples use real image processing; text/table examples use a dummy white image for VLM batching, not a table screenshot."
+        },
+        {
+          "url": "https://github.com/OpenBMB/MoRE/blob/main/Easy-R1/examples/run_qwen2_5_vl_7b_stepgrpo.sh",
+          "location": "MODEL_PATH",
+          "note": "Step-GRPO starts Qwen/Qwen2.5-VL-7B-Instruct; no separate SFT checkpoint specified."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2505.22095v2",
+          "location": "Figure 2 PDF page 4",
+          "note": "Original Step-GRPO method diagram."
+        }
+      ],
+      "caveats": [
+        "这是通用多模态检索代理，因实际训练含表格 QA 而收录；不是表格专用方法。",
+        "按表格任务实际输入归入文本表格：Open-WikiTable/TabFact 的表格为结构化文本，并非表格图像；VQA 分支确实处理图片像素。",
+        "TabFact 是 OOD 测试集，不是 RL 或 SFT 训练集。",
+        "论文初稿名 R1-Router；2026 年 v2 更名为 MoRE，视为同一篇文章，不能重复计数。"
+      ],
+      "pdf_file": "tmp/pdfs/more.pdf",
+      "scope_note": "通用多模态 RAG 代理；表格任务输入为文本。"
+    },
+    {
+      "slug": "table-r1-region",
+      "title": "Table-R1: Region-based Reinforcement Learning for Table Understanding",
+      "date": "2025-05-18",
+      "venue": "arXiv",
+      "paper_url": "https://arxiv.org/abs/2505.12415",
+      "pdf_url": "https://arxiv.org/pdf/2505.12415v3",
+      "pdf_version": "arXiv v3, 2026-05-13",
+      "code_url": "https://github.com/wuzhenhe/Table-R1",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "Data Analysis"
+      ],
+      "algorithm": "TARPO (Table-Aware Group Relative Policy Optimization)",
+      "method_zh": "RE-SFT 先学习在推理步骤中定位最小相关行列区域；再用 TARPO 将行列 IoU 与最终答案正确性组合为奖励，逐步衰减区域奖励，并惩罚区域与答案优势方向不一致的更新。支持直接、文本思维链、符号和程序推理。",
+      "sft_data": "TableInstruct-RE：在 TableInstruct 的 19,661 条指令上由 DeepSeek-R1 生成最小相关区域并人工核对；RE-SFT 使用全量。",
+      "rl_data": "同一 TableInstruct-RE，随机按 9:1 划分 TARPO 训练/验证；不把 TableBench、WikiTQ 或 WikiSQL 测试集列作训练数据。",
+      "eval_data": "TableBench、WikiTQ 测试集、WikiSQL 测试集。",
+      "figure_number": "2",
+      "figure_page": 3,
+      "figure_crop": [
+        72,
+        68,
+        520,
+        254
+      ],
+      "figure_caption": "RE-SFT 区域标注与 TARPO 区域/答案奖励训练流程。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2505.12415",
+          "location": "Submission history",
+          "note": "首次公开 2025-05-18；固定 v3。"
+        },
+        {
+          "url": "https://arxiv.org/pdf/2505.12415v3",
+          "location": "Sections 2.3–2.4; Implementation Details, PDF p.5; Figure 2",
+          "note": "TARPO 实际策略更新、区域 IoU/答案奖励；RE-SFT 全量，RL 9:1 划分。"
+        },
+        {
+          "url": "https://github.com/wuzhenhe/Table-R1",
+          "location": "README and RE-SFT/TARPO directories",
+          "note": "作者公开实现与 TableInstruct 区域数据。"
+        }
+      ],
+      "caveats": [
+        "与其他同名 Table-R1 工作是不同论文，不合并条目。"
+      ],
+      "pdf_pages": 18,
+      "pdf_sha256": "5fc2e85efc224814fd6fe5ba999c17dec3be54a168e9e44cf4a23352026c5c89",
+      "figure_path": "img/table-r1-region.png",
+      "figure_source_url": "https://arxiv.org/pdf/2505.12415v3",
+      "pdf_file": "tmp/pdfs/table-r1-region.pdf"
+    },
+    {
+      "slug": "sparks-text2sql",
+      "title": "Sparks of Tabular Reasoning via Text2SQL Reinforcement Learning",
+      "date": "2025-04-23",
+      "venue": "TRL Workshop 2025 (ACL)",
+      "paper_url": "https://aclanthology.org/2025.trl-1.20/",
+      "pdf_url": "https://aclanthology.org/2025.trl-1.20.pdf",
+      "pdf_version": "ACL TRL Workshop published version, 12 pages",
+      "code_url": "https://github.com/josefastoisser/sparks_of_tabular_reasoning",
+      "modality": "text",
+      "tasks": [
+        "TQA",
+        "TFV",
+        "Text-to-SQL"
+      ],
+      "algorithm": "GRPO",
+      "method_zh": "先用 o3-mini 生成 SQL 与逐步推理，由第二模型检查答案和轨迹，再做 SFT；随后在 BIRD 上做 GRPO，用 SQL 质量、匹配与 LLM 评分奖励。检验仅 SQL 训练是否迁移到 CRT-QA 和表格事实验证。",
+      "sft_data": "Clinton/Text-to-SQL 集合生成并验证的 3,174 条 SQL/CoT 轨迹（正式版本数字）。",
+      "rl_data": "BIRD；正式论文 Figure 2、Table 1 和实现说明明确用于 GRPO，但未明确给出 RL 子集的准确条数与划分。",
+      "eval_data": "Clinton、BIRD minidev；CRT-QA、TableBench Fact Checking 为表格理解迁移评测。",
+      "figure_number": "2",
+      "figure_page": 4,
+      "figure_crop": [
+        72,
+        365,
+        289,
+        533
+      ],
+      "figure_caption": "SQL/CoT 合成与验证、Clinton SFT、BIRD GRPO 两阶段流程。",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2505.00016",
+          "location": "Submission history",
+          "note": "首次公开是 2025-04-23，不按 arXiv 编号推断月份。"
+        },
+        {
+          "url": "https://aclanthology.org/2025.trl-1.20.pdf",
+          "location": "Sections 3.1–3.2, 4.1; Figure 2; Table 1; Appendix C",
+          "note": "3,174 个 SFT 轨迹、BIRD GRPO；CRT-QA/事实验证为迁移评测。"
+        },
+        {
+          "url": "https://github.com/josefastoisser/sparks_of_tabular_reasoning",
+          "location": "README / training documentation",
+          "note": "作者公开训练、评测说明和合成数据。"
+        }
+      ],
+      "caveats": [
+        "标为 SQL 训练向表格理解迁移，不扩展为收集纯 Text-to-SQL 工作。",
+        "主文所谓 execution-based 奖励含 o3-mini 估计 SQL 字符修改数；Appendix C 又描述 SQLite execution-guided 奖励，不能把所有奖励都写成数据库真实执行。",
+        "不把 BIRD minidev 评测划分自行认定为 RL 训练划分。"
+      ],
+      "pdf_pages": 12,
+      "pdf_sha256": "88ae4783708a052d7975dc2a507874e2a8e43dd17dafeca6f30f549e3d721379",
+      "figure_path": "img/sparks-text2sql.png",
+      "figure_source_url": "https://aclanthology.org/2025.trl-1.20.pdf",
+      "pdf_file": "tmp/pdfs/sparks-text2sql.pdf",
+      "scope_note": "SQL 训练后明确评测表格 QA 迁移能力。"
+    },
+    {
+      "slug": "drl-qa-text-tables",
+      "title": "Question Answering with Texts and Tables through Deep Reinforcement Learning",
+      "date": "2024-07-05",
+      "venue": "BRACIS 2024",
+      "paper_url": "https://arxiv.org/abs/2407.04858",
+      "pdf_url": "https://arxiv.org/pdf/2407.04858",
+      "code_url": "https://github.com/MMenonJ/DRL_QA_TT",
+      "modality": "text",
+      "tasks": [
+        "TQA"
+      ],
+      "algorithm": "DQN / PPO (module-selection policy)",
+      "method_zh": "用 DRL 控制器在检索文本、检索表格、调用阅读器作答三种动作间决策，底层检索器和阅读器保持预训练权重。DQN/PPO 根据最终答案 EM/F1 获得延迟奖励，并对每次检索施加小额成本，学习开放域多跳证据获取顺序。",
+      "sft_data": "控制器未使用动作序列 SFT；使用已有 BM25/Tri-encoder 检索器、FiE 阅读器和编码器，不重新训练这些底层模型。",
+      "rl_data": "OTT-QA train：41,469 个问题；Tri-encoder 方案 1M timesteps，BM25 方案 100K timesteps。",
+      "eval_data": "OTT-QA validation/dev（公开代码 test_models 脚本）；EM 与 F1。",
+      "figure_number": "2",
+      "figure_page": 7,
+      "figure_caption": "Proposed architecture: the DRL agent selects Retrieve Texts, Retrieve Tables, or Generate the Answer based on current evidence.",
+      "evidence": [
+        {
+          "url": "https://arxiv.org/abs/2407.04858",
+          "location": "Submission history",
+          "note": "First submitted 5 July 2024."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2407.04858",
+          "location": "Sections 3.2–3.3, PDF pages 8–9",
+          "note": "Final reward is 2 for EM, F1 for partial overlap, -0.5 for no overlap; each retrieval costs -0.02; bottom modules are not retrained."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2407.04858",
+          "location": "Section 4.2, PDF pages 10–11",
+          "note": "OTT-QA training count and actual DQN/PPO optimization."
+        },
+        {
+          "url": "https://github.com/MMenonJ/DRL_QA_TT",
+          "location": "README Dataset, Training, Testing",
+          "note": "Code is public; testing runs on validation dataset; DOI links BRACIS proceedings."
+        },
+        {
+          "url": "https://arxiv.org/pdf/2407.04858",
+          "location": "Figure 2, PDF page 7",
+          "note": "Original architecture diagram."
+        }
+      ],
+      "caveats": [
+        "RL 训练的是模块调度策略，不是对底层 LLM 做 RL 后训练；与 GRPO 论文应区分。",
+        "文本和表格联合输入不等于视觉多模态；归入文本表格理解。",
+        "该论文结果为探索性模块调度实验，不能描述为超越同期强基线。"
+      ],
+      "figure_crop": [
+        187,
+        114,
+        425,
+        280
+      ],
+      "figure_path": "img/drl-qa-text-tables.png",
+      "pdf_sha256": "a659afc81797056a8c3cf66dea39abd1cfecf70877d227e1783b6264964969ab",
+      "pdf_file": "tmp/pdfs/drl-qa-text-tables.pdf",
+      "scope_note": "RL 训练模块调度控制器，底层阅读器保持固定。"
+    }
+  ]
+}
