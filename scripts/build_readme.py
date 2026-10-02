@@ -45,21 +45,23 @@ def build():
     for modality, anchor, heading in [('text','text-table-understanding','文本表格理解'), ('multimodal','multimodal-table-understanding','多模态表格理解')]:
         group = [e for e in papers if e['modality'] == modality]
         lines += [f'<a id="{anchor}"></a>', f'## 🔥 {heading}', '',
-                  '| Date | Paper Title | Introduction（方法图） | Code | 方法描述 | 训练数据集 |',
-                  '| --- | --- | --- | --- | --- | --- |']
+                  '<table>', '<thead>',
+                  '<tr><th>Date</th><th>Paper Title</th><th>Introduction（方法图）</th><th>Code</th><th>方法描述</th><th>训练数据集</th></tr>',
+                  '</thead>', '<tbody>']
         for e in group:
             slug = e['slug']
             fig = e.get('figure_path', f'img/{slug}.png')
-            title = f"[{cell(e['title'])}]({e['paper_url']})<br>{cell(e['venue'])}<br>`{' / '.join(e['tasks'])}` · [证据卡](docs/PAPERS.md#{slug})"
-            image = f'<a href="{fig}"><img src="{fig}" width="560" alt="{cell(e["title"])} method diagram"></a><br>Fig. {cell(e["figure_number"])} · PDF p.{e["figure_page"]}'
+            title = f'<a href="{cell(e["paper_url"])}">{cell(e["title"])}</a><br>{cell(e["venue"])}<br><code>{cell(" / ".join(e["tasks"]))}</code> · <a href="docs/PAPERS.md#{slug}">证据卡</a>'
+            image = f'Fig. {cell(e["figure_number"])} · PDF p.{e["figure_page"]}<br><a href="{fig}">查看原图</a>'
             code_label = 'GitHub（占位，训练代码未发布）' if e.get('code_status') == 'author repository placeholder' else 'GitHub'
-            code = f"[{code_label}]({e['code_url']})" if e.get('code_url') else '未核实'
-            method = f"**{cell(e['algorithm'])}**<br>{cell(e['method_zh'])}"
+            code = f'<a href="{cell(e["code_url"])}">{code_label}</a>' if e.get('code_url') else '未核实'
+            method = f"<strong>{cell(e['algorithm'])}</strong><br>{cell(e['method_zh'])}"
             if e.get('scope_note'):
                 method += f"<br>⚑ {cell(e['scope_note'])}"
-            data = f"**RL：**{cell(note_text(e['rl_data']))}<br>**SFT：**{cell(note_text(e['sft_data']))}"
-            lines.append(f"| {e['date']} | {title} | {image} | {code} | {method} | {data} |")
-        lines.append('')
+            data = f"<strong>RL：</strong>{cell(note_text(e['rl_data']))}<br><strong>SFT：</strong>{cell(note_text(e['sft_data']))}"
+            lines.append(f'<tr><td>{e["date"]}</td><td>{title}</td><td>{image}</td><td>{code}</td><td>{method}</td><td>{data}</td></tr>')
+            lines.append(f'<tr><td colspan="6" align="center"><a href="{fig}"><img src="{fig}" width="1000" alt="{cell(e["title"])} method diagram"></a></td></tr>')
+        lines += ['</tbody>', '</table>', '']
     lines += ['<a id="task-index"></a>', '## 🧭 任务索引', '', '| 任务 | 篇数 | 条目 |', '| --- | --- | --- |']
     for task in ['TQA', 'TFV', 'T2T']:
         group = [e for e in papers if task in e['tasks']]
