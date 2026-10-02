@@ -51,7 +51,7 @@ def build():
             slug = e['slug']
             fig = e.get('figure_path', f'img/{slug}.png')
             title = f"[{cell(e['title'])}]({e['paper_url']})<br>{cell(e['venue'])}<br>`{' / '.join(e['tasks'])}` · [证据卡](docs/PAPERS.md#{slug})"
-            image = f'<a href="{fig}"><img src="{fig}" width="280" alt="{cell(e["title"])} method diagram"></a><br>Fig. {cell(e["figure_number"])} · PDF p.{e["figure_page"]}'
+            image = f'<a href="{fig}"><img src="{fig}" width="560" alt="{cell(e["title"])} method diagram"></a><br>Fig. {cell(e["figure_number"])} · PDF p.{e["figure_page"]}'
             code_label = 'GitHub（占位，训练代码未发布）' if e.get('code_status') == 'author repository placeholder' else 'GitHub'
             code = f"[{code_label}]({e['code_url']})" if e.get('code_url') else '未核实'
             method = f"**{cell(e['algorithm'])}**<br>{cell(e['method_zh'])}"
